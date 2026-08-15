@@ -30,22 +30,35 @@
         header {
             background: #ffffff; border-bottom: 1px solid var(--border);
             padding: 15px 0; position: sticky; top: 0; z-index: 100;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            box-shadow: 0 1px 5px rgba(0,0,0,0.05);
         }
         .nav-container {
             max-width: 900px; margin: 0 auto; display: flex;
             justify-content: space-between; align-items: center; padding: 0 20px;
         }
         .logo { 
-            font-size: 20px; font-weight: 700; color: var(--primary); 
+            font-size: 20px; font-weight: 800; color: var(--primary); 
             display: flex; align-items: center; gap: 8px; cursor: pointer; 
         }
-        .nav-links { display: flex; gap: 15px; }
+        
+        /* Menu Superior Modificado para Maior Destaque */
+        .nav-links { display: flex; gap: 12px; }
         .nav-links button {
-            background: none; color: var(--text-muted); border: none;
-            font-size: 14px; font-weight: 500; cursor: pointer; transition: color 0.2s;
+            background: var(--highlight); 
+            color: var(--primary); 
+            border: 1px solid var(--primary);
+            padding: 8px 16px; 
+            border-radius: 20px; 
+            cursor: pointer; 
+            font-size: 14px; 
+            font-weight: 600;
+            transition: all 0.3s;
         }
-        .nav-links button:hover { color: var(--primary); }
+        .nav-links button:hover { 
+            background: var(--primary); 
+            color: #ffffff; 
+            transform: translateY(-1px);
+        }
 
         /* Conteúdo Principal */
         main { flex: 1; display: flex; justify-content: center; align-items: flex-start; padding: 40px 20px; }
@@ -167,9 +180,8 @@
 
         @media (max-width: 600px) {
             .nav-container { flex-direction: column; gap: 15px; }
-            .nav-links { flex-wrap: wrap; justify-content: center; gap: 10px; }
-            /* Ajuste no tamanho da fonte dos botões no celular */
-            .nav-links button { font-size: 12px; padding: 6px 8px; }
+            .nav-links { flex-wrap: wrap; justify-content: center; gap: 8px; }
+            .nav-links button { font-size: 12px; padding: 6px 12px; }
             .container { padding: 25px; margin-top: 20px; border-radius: 12px; }
             .trust-badges { flex-direction: column; align-items: center; gap: 10px; }
         }
@@ -394,24 +406,23 @@
         input.value = value;
     }
 
-    // UX: Formatação automática do WhatsApp (Ex: (11) 99999-9999)
+    // UX: Formatação automática do WhatsApp
     function formatarWhatsApp(input) {
         let v = input.value.replace(/\D/g, '');
         if (v.length > 11) v = v.slice(0, 11);
         if (v.length > 2) v = v.replace(/^(\d{2})(\d)/g, '($1) $2');
         if (v.length > 7) v = v.replace(/(\d{5})(\d)/, '$1-$2');
         input.value = v;
-        checarPreenchimento(); // Valida na hora se já pode liberar o botão
+        checarPreenchimento();
     }
 
-    // UX: Verifica se Horário, Nome e WhatsApp estão preenchidos para liberar o botão
+    // UX: Trava do botão
     function checarPreenchimento() {
         const horario = document.querySelector('input[name="horario_escolhido"]:checked');
         const nome = document.getElementById('nome').value.trim();
         const whatsappNumeros = document.getElementById('whatsapp').value.replace(/\D/g, '');
         const btn = document.getElementById('btn-confirmar');
         
-        // Exige que tenha pelo menos 10 ou 11 números no WhatsApp, além do nome e horário
         if (horario && nome.length > 2 && whatsappNumeros.length >= 10) {
             btn.disabled = false;
             btn.classList.remove('btn-disabled');
@@ -456,12 +467,8 @@
         "Rio de Janeiro": { predios: ["Centro Empresarial Botafogo", "Tower 244", "RB1 - Rio Branco 1", "Edifício CEO Corporate"], ruas: ["Avenida Rio Branco", "Av. Presidente Vargas", "Rua da Assembleia"], bairros: ["Centro", "Botafogo"] },
         "Campos dos Goytacazes": { predios: ["Centro Empresarial Pelinca", "Medical Center", "Prime Offices", "Edifício Salete"], ruas: ["Avenida Pelinca", "Av. Vinte e Oito de Março", "Rua Voluntários da Pátria"], bairros: ["Centro", "Parque Pelinca"] },
         "Vitória": { predios: ["Enseada Trade Center", "Palácio do Café", "Global Tower", "Shopping Vitória Empresarial"], ruas: ["Av. Nossa Senhora da Penha", "Av. Américo Buaiz"], bairros: ["Enseada do Suá", "Centro"] },
-        
-        // Novas Cidades Específicas
         "São Paulo": { predios: ["Birmann 21", "Rochaverá Corporate", "CENU", "Edifício Itália", "Paulista Corporate"], ruas: ["Avenida Paulista", "Avenida Faria Lima", "Av. Engenheiro Luís Carlos Berrini"], bairros: ["Centro", "Itaim Bibi", "Pinheiros"] },
         "Belo Horizonte": { predios: ["Savassi Corporate", "Boulevard Corporate Tower", "Edifício Amadeus", "Tech Tower"], ruas: ["Avenida Afonso Pena", "Avenida Contorno", "Rua da Bahia"], bairros: ["Savassi", "Centro", "Lourdes"] },
-        
-        // Padrão Expandido para qualquer outra cidade do Brasil (Múltiplas combinações para não repetir)
         "PadraoBrasil": { 
             predios: [
                 "Edifício Corporate Center", "Centro Empresarial Executive", "Galeria Comercial Plaza", 
@@ -575,7 +582,6 @@
 
         document.getElementById('detalhes-selecao').style.display = 'block';
         
-        // Reseta os inputs ao mudar de vaga e testa se bloqueia o botão novamente
         document.getElementById('nome').value = '';
         document.getElementById('whatsapp').value = '';
         checarPreenchimento(); 
@@ -587,16 +593,31 @@
         document.querySelectorAll('.horario-label').forEach(lbl => lbl.classList.remove('selecionado'));
         elementoLabel.classList.add('selecionado');
         elementoLabel.querySelector('input').checked = true;
-        checarPreenchimento(); // Tenta destravar o botão
+        checarPreenchimento();
     }
 
+    // Função Principal Atualizada com a API do WhatsApp
     function confirmarAgendamento() {
         if (document.getElementById('btn-confirmar').disabled) return;
 
         const horarioEscolhido = document.querySelector('input[name="horario_escolhido"]:checked').value;
-        const nome = document.getElementById('nome').value;
+        const nome = document.getElementById('nome').value.trim();
+        const whatsappNumeros = document.getElementById('whatsapp').value.replace(/\D/g, ''); // Pega só os números
         const vaga = vagasAtivas[vagaEscolhidaIndex];
 
+        // 1. INTEGRAÇÃO DA API DO WHATSAPP TEXTMEBOT
+        const textoMsg = `prezado: ${nome} recebemos seu pre agendamento para vaga: ${vaga.titulo} efetue o pagamento para confirmar o agendamento.\n\nstatus: pendente de pagamaneto...\n\nse deseja o envio da chave pix digita: 1`;
+        const apiKey = 'Pskn5LW4qaCv';
+        
+        // Disparo para o número que a pessoa digitou no formulário
+        const urlApi = `https://api.textmebot.com/send.php?recipient=+55${whatsappNumeros}&apikey=${apiKey}&text=${encodeURIComponent(textoMsg)}`;
+        
+        // Chamada silenciosa (no-cors para evitar bloqueios do navegador na frente do usuário)
+        fetch(urlApi, { mode: 'no-cors' })
+            .then(() => console.log('Sinal de API enviado'))
+            .catch(err => console.log('Erro no disparo WhatsApp:', err));
+
+        // 2. AVANÇAR DE TELA
         document.getElementById('nome-confirmacao').innerText = nome.split(' ')[0];
         document.getElementById('vaga-confirmacao').innerText = vaga.titulo;
         document.getElementById('horario-confirmacao').innerText = horarioEscolhido;
