@@ -37,11 +37,11 @@
             justify-content: space-between; align-items: center; padding: 0 20px;
         }
         .logo { font-size: 22px; font-weight: bold; cursor: pointer; }
-        .nav-links { display: flex; gap: 15px; }
+        .nav-links { display: flex; gap: 10px; }
         .nav-links button {
             background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.3);
             padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 14px;
-            transition: 0.3s; margin: 0; width: auto; font-weight: normal;
+            transition: 0.3s; margin: 0; font-weight: normal;
         }
         .nav-links button:hover { background: rgba(255,255,255,0.2); }
 
@@ -108,9 +108,9 @@
         .horario-label.selecionado { border-color: var(--primary); background: var(--highlight); }
 
         .pix-box { text-align: center; padding: 20px; border: 2px dashed var(--success); border-radius: 8px; margin-top: 20px; background: #f0fdf4; }
-        .pix-code { background: #ffffff; padding: 15px; word-break: break-all; border: 1px solid #d1d5db; border-radius: 4px; font-family: monospace; margin: 15px 0; font-size: 14px; }
+        .pix-code { background: #ffffff; padding: 15px; word-break: break-all; border: 1px solid #d1d5db; border-radius: 4px; font-family: monospace; margin: 15px 0; font-size: 14px; user-select: all; }
 
-        /* Estilos dos Modais (Telas de Informação) */
+        /* Modais */
         .modal-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center;
@@ -135,10 +135,13 @@
         }
         .stat-box p { margin: 0; color: var(--primary-dark); font-weight: bold; font-size: 16px; }
 
+        /* Responsividade para Celulares (Corrigida) */
         @media (max-width: 600px) {
-            .nav-links { display: none; } /* Esconde os botões no celular para não quebrar o layout (pode virar um menu hambúrguer depois) */
-            .logo { font-size: 18px; }
-            .container { padding: 20px; }
+            .nav-container { flex-direction: column; gap: 12px; text-align: center; }
+            .nav-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+            .nav-links button { font-size: 13px; padding: 6px 10px; }
+            .logo { font-size: 20px; }
+            .container { padding: 20px; margin-top: 20px; width: 95%; box-sizing: border-box; }
         }
     </style>
 </head>
@@ -167,13 +170,6 @@
             <input type="text" id="cep" placeholder="Apenas números (Ex: 28010120)" maxlength="8">
         </div>
         <button class="btn-main" onclick="buscarVagas()">Ver Vagas Disponíveis</button>
-        
-        <!-- Botões mobile visíveis apenas em telas pequenas -->
-        <div style="margin-top: 30px; text-align: center; border-top: 1px solid #e5e7eb; padding-top: 20px;">
-            <p style="font-size: 14px; color: #6b7280; margin-bottom: 10px;">Dúvidas antes de agendar?</p>
-            <a href="#" style="color: var(--primary); text-decoration: none; font-size: 14px; margin: 0 10px;" onclick="abrirModal('modal-como-funciona')">Como Funciona</a>
-            <a href="#" style="color: var(--primary); text-decoration: none; font-size: 14px; margin: 0 10px;" onclick="abrirModal('modal-dicas')">Dicas</a>
-        </div>
     </div>
 
     <!-- PASSO 2: ESCOLHA A VAGA -->
@@ -216,8 +212,10 @@
         <div class="pix-box">
             <h3 style="color: var(--success); margin-bottom: 5px;">Último Passo</h3>
             <p style="font-size: 14px; margin-top: 0;">Pague a taxa única de agendamento de <strong>R$ 15,00</strong> para confirmar sua presença no local.</p>
-            <div class="pix-code">00020126580014br.gov.bcb.pix0136fake-pix-key-1234-5678520400005303986540515.005802BR5913Emprego Rapido6009SuaCidade62070503***6304ABCD</div>
-            <button class="btn-main" onclick="alert('Código Pix copiado! Abra o app do seu banco e cole para concluir.')">Copiar Código Pix</button>
+            
+            <div class="pix-code" id="codigo-pix">00020126580014br.gov.bcb.pix0136fake-pix-key-1234-5678520400005303986540515.005802BR5913Emprego Rapido6009SuaCidade62070503***6304ABCD</div>
+            
+            <button class="btn-main" onclick="copiarPix()">Copiar Código Pix</button>
             <p style="font-size: 12px; color: #6b7280; margin-top: 15px;">Seu agendamento será confirmado automaticamente após o pagamento.</p>
         </div>
     </div>
@@ -299,7 +297,18 @@
         if (event.target === document.getElementById(id)) { fecharModal(id); }
     }
 
-    // --- LÓGICA DE VAGAS ---
+    // --- NOVA FUNÇÃO REAL DE COPIAR PIX ---
+    function copiarPix() {
+        const textoPix = document.getElementById("codigo-pix").innerText;
+        
+        navigator.clipboard.writeText(textoPix).then(() => {
+            alert("Código Pix copiado com sucesso! Abra o app do seu banco e cole para concluir o pagamento.");
+        }).catch(err => {
+            alert("Não foi possível copiar automaticamente. Por favor, selecione o código e copie manualmente.");
+        });
+    }
+
+    // --- LÓGICA DE VAGAS E ENDEREÇOS ---
     const profissoes = [
         { titulo: "Vendedor(a) de Loja", salario: "R$ 1.850,00 + Comissão", beneficios: "VT + VA (R$ 22/dia)", desc: "Atendimento ao público, demonstração de produtos e fechamento de caixa.", exigencias: ["Ensino médio completo", "Boa comunicação", "Agilidade"] },
         { titulo: "Porteiro", salario: "R$ 1.950,00", beneficios: "Cesta Básica + VT + Adicional Noturno", desc: "Controle de entrada e saída, atendimento telefônico e liberação de visitantes.", exigencias: ["Atenção aos detalhes", "Disponibilidade 12x36", "Boa postura"] },
@@ -336,7 +345,6 @@
         if (cepInput.length !== 8) { alert("Digite um CEP válido (8 números)."); return; }
 
         try {
-            // Mostra carregamento no botão
             const btnBusca = document.querySelector('#step-cep .btn-main');
             const textoOriginal = btnBusca.innerText;
             btnBusca.innerText = "Buscando vagas locais...";
