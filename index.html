@@ -168,6 +168,8 @@
         @media (max-width: 600px) {
             .nav-container { flex-direction: column; gap: 15px; }
             .nav-links { flex-wrap: wrap; justify-content: center; gap: 10px; }
+            /* Ajuste no tamanho da fonte dos botões no celular */
+            .nav-links button { font-size: 12px; padding: 6px 8px; }
             .container { padding: 25px; margin-top: 20px; border-radius: 12px; }
             .trust-badges { flex-direction: column; align-items: center; gap: 10px; }
         }
@@ -184,8 +186,8 @@
         </div>
         <div class="nav-links">
             <button onclick="abrirModal('modal-como-funciona')">Como Funciona</button>
-            <button onclick="abrirModal('modal-dicas')">Dicas</button>
-            <button onclick="abrirModal('modal-curriculo')">Currículo</button>
+            <button onclick="abrirModal('modal-dicas')">Dicas de Entrevista</button>
+            <button onclick="abrirModal('modal-curriculo')">Dicas de Currículo</button>
         </div>
     </div>
 </header>
@@ -373,7 +375,7 @@
 
 <div id="modal-curriculo" class="modal-overlay" onclick="fecharModalFora(event, 'modal-curriculo')">
     <div class="modal-content"><button class="modal-close" onclick="fecharModal('modal-curriculo')">&times;</button><div class="modal-body">
-        <h2>Ajuda com Currículo</h2>
+        <h2>Como fazer o Currículo</h2>
         <p>Leve o documento impresso e sem amassados no dia agendado.</p>
         <ul>
             <li><strong>Dados no topo:</strong> Nome, Idade, Bairro e WhatsApp.</li>
@@ -449,11 +451,34 @@
         [{ dia: "Sexta-feira", hora: "09:30" }, { dia: "Terça-feira", hora: "14:00" }]
     ];
 
+    // BANCO DE DADOS REGIONALIZADO EXPANDIDO
     const dadosLocaisPorCidade = {
-        "Rio de Janeiro": { predios: ["Centro Empresarial Botafogo", "Tower 244"], ruas: ["Avenida Rio Branco", "Av. Presidente Vargas"], bairros: ["Centro", "Botafogo"] },
-        "Campos dos Goytacazes": { predios: ["Centro Empresarial Pelinca", "Medical Center"], ruas: ["Avenida Pelinca", "Av. Vinte e Oito de Março"], bairros: ["Centro", "Parque Pelinca"] },
-        "Vitória": { predios: ["Enseada Trade Center", "Palácio do Café"], ruas: ["Av. Nossa Senhora da Penha", "Av. Américo Buaiz"], bairros: ["Enseada do Suá", "Centro"] },
-        "PadraoBrasil": { predios: ["Edifício Corporate", "Centro Comercial Principal"], ruas: ["Avenida Central", "Rua do Comércio"], bairros: ["Centro de Negócios", "Setor Comercial"] }
+        "Rio de Janeiro": { predios: ["Centro Empresarial Botafogo", "Tower 244", "RB1 - Rio Branco 1", "Edifício CEO Corporate"], ruas: ["Avenida Rio Branco", "Av. Presidente Vargas", "Rua da Assembleia"], bairros: ["Centro", "Botafogo"] },
+        "Campos dos Goytacazes": { predios: ["Centro Empresarial Pelinca", "Medical Center", "Prime Offices", "Edifício Salete"], ruas: ["Avenida Pelinca", "Av. Vinte e Oito de Março", "Rua Voluntários da Pátria"], bairros: ["Centro", "Parque Pelinca"] },
+        "Vitória": { predios: ["Enseada Trade Center", "Palácio do Café", "Global Tower", "Shopping Vitória Empresarial"], ruas: ["Av. Nossa Senhora da Penha", "Av. Américo Buaiz"], bairros: ["Enseada do Suá", "Centro"] },
+        
+        // Novas Cidades Específicas
+        "São Paulo": { predios: ["Birmann 21", "Rochaverá Corporate", "CENU", "Edifício Itália", "Paulista Corporate"], ruas: ["Avenida Paulista", "Avenida Faria Lima", "Av. Engenheiro Luís Carlos Berrini"], bairros: ["Centro", "Itaim Bibi", "Pinheiros"] },
+        "Belo Horizonte": { predios: ["Savassi Corporate", "Boulevard Corporate Tower", "Edifício Amadeus", "Tech Tower"], ruas: ["Avenida Afonso Pena", "Avenida Contorno", "Rua da Bahia"], bairros: ["Savassi", "Centro", "Lourdes"] },
+        
+        // Padrão Expandido para qualquer outra cidade do Brasil (Múltiplas combinações para não repetir)
+        "PadraoBrasil": { 
+            predios: [
+                "Edifício Corporate Center", "Centro Empresarial Executive", "Galeria Comercial Plaza", 
+                "Tower Office Business", "Prime Business Center", "Edifício Trade", 
+                "Complexo Empresarial", "Plaza Corporate", "Global Offices", 
+                "Medical & Business Center", "Edifício Metropolitan", "Centro Executivo"
+            ], 
+            ruas: [
+                "Avenida Central", "Rua do Comércio", "Avenida Principal", 
+                "Rua Empresarial", "Avenida Comercial", "Rua das Indústrias", 
+                "Avenida Brasil", "Rua Quinze de Novembro", "Avenida Independência"
+            ], 
+            bairros: [
+                "Centro", "Setor Comercial", "Distrito de Negócios", 
+                "Jardim América", "Centro Empresarial", "Zona Central"
+            ] 
+        }
     };
 
     let vagasAtivas = [];
