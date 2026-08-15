@@ -162,38 +162,78 @@
         [{ dia: "Próxima Sexta", hora: "09:30" }, { dia: "Próxima Terça", hora: "14:00" }]
     ];
 
-    // BANCO DE DADOS REGIONALIZADO: RJ E ES
-    const prediosPorCidade = {
-        // Principais Polos - Rio de Janeiro (RJ)
-        "Rio de Janeiro": ["Centro Empresarial Botafogo", "RB1 - Rio Branco 1", "Edifício Argentina", "CEO Corporate", "Tower 244"],
-        "Campos dos Goytacazes": ["Edifício Salete", "Centro Empresarial Pelinca", "Edifício Platinum", "Prime Offices", "Medical Center", "Edifício Ninho das Águias"],
-        "Macaé": ["Macaé Business Center", "Edifício Petro Tower", "Centro Empresarial Washington Luiz", "Prime Office Macaé"],
-        "Niterói": ["Icaraí Corporate", "Niterói Shopping Offices", "Plaza Corporate", "Tower 2000"],
-        "São Gonçalo": ["Icon Business", "São Gonçalo Corporate", "Centro Comercial São Gonçalo"],
-        "Duque de Caxias": ["Caxias Shopping Offices", "Edifício Profissional Caxias", "Centro Empresarial Caxias"],
-        "Nova Iguaçu": ["Luzes Corporate", "Nova Iguaçu Business", "Centro Comercial Iguaçu"],
-        "Cabo Frio": ["Cabo Frio Corporate", "Centro Empresarial Praia Office", "Lagos Business"],
-        "Rio das Ostras": ["Ostras Office Center", "Centro Empresarial Mar do Norte", "Vilarejo Corporate"],
-        "Petrópolis": ["Petrópolis Business Center", "Edifício Profissional Imperial", "Centro Comercial Serra Offices"],
-        "Volta Redonda": ["Sider Shopping Offices", "Volta Redonda Business Center", "Edifício Comercial Aterrado"],
+    // BANCO DE DADOS REGIONALIZADO COMPLETO (PRÉDIOS, RUAS COMERCIAIS E BAIRROS)
+    const dadosLocaisPorCidade = {
+        // Rio de Janeiro
+        "Rio de Janeiro": {
+            predios: ["Centro Empresarial Botafogo", "RB1 - Rio Branco 1", "Edifício Argentina", "CEO Corporate", "Tower 244"],
+            ruas: ["Avenida Rio Branco", "Praia de Botafogo", "Avenida Presidente Vargas", "Avenida das Américas", "Rua da Assembleia"],
+            bairros: ["Centro", "Botafogo", "Barra da Tijuca", "Copacabana"]
+        },
+        "Campos dos Goytacazes": {
+            predios: ["Edifício Salete", "Centro Empresarial Pelinca", "Edifício Platinum", "Prime Offices", "Medical Center", "Edifício Ninho das Águias"],
+            ruas: ["Avenida Pelinca", "Rua Voluntários da Pátria", "Avenida Vinte e Oito de Março", "Rua Conselheiro Otaviano", "Rua Tenente Coronel Cardoso"],
+            bairros: ["Centro", "Parque Pelinca", "Parque Tamandaré"]
+        },
+        "Macaé": {
+            predios: ["Macaé Business Center", "Edifício Petro Tower", "Centro Empresarial Washington Luiz", "Prime Office Macaé"],
+            ruas: ["Avenida Rui Barbosa", "Rua Silva Jardim", "Avenida Nossa Senhora da Glória"],
+            bairros: ["Centro", "Imbetiba", "Cavaleiros"]
+        },
+        "Niterói": {
+            predios: ["Icaraí Corporate", "Niterói Shopping Offices", "Plaza Corporate", "Tower 2000"],
+            ruas: ["Avenida Ernani do Amaral Peixoto", "Rua Gavião Peixoto", "Avenida Roberto Silveira"],
+            bairros: ["Centro", "Icaraí"]
+        },
+        "São Gonçalo": {
+            predios: ["Icon Business", "São Gonçalo Corporate", "Centro Comercial São Gonçalo"],
+            ruas: ["Rua Doutor Nilo Peçanha", "Avenida Presidente Kennedy", "Rua Feliciano Sodré"],
+            bairros: ["Centro", "Estrela do Norte", "Alcântara"]
+        },
+        "Duque de Caxias": {
+            predios: ["Caxias Shopping Offices", "Edifício Profissional Caxias", "Centro Empresarial Caxias"],
+            ruas: ["Avenida Presidente Kennedy", "Rua Professor José de Souza Herdy"],
+            bairros: ["Centro", "Jardim Vinte e Cinco de Agosto"]
+        },
 
-        // Principais Polos - Espírito Santo (ES)
-        "Vitória": ["Enseada Trade Center", "Global Tower", "Shopping Vitória Empresarial", "Centro Empresarial Praia", "Nove de Julho", "Palácio do Café"],
-        "Vila Velha": ["Edifício Corporate Center", "Vila Velha Empresarial", "Centro Comercial Praia da Costa", "Tower Office"],
-        "Serra": ["Serra Trade Center", "Centro Empresarial Laranjeiras", "Edifício Essencial Office"],
-        "Cariacica": ["Cariacica Business Center", "Edifício Comercial Campo Grande", "Centro Empresarial Cariacica"],
-        "Guarapari": ["Guarapari Business Center", "Centro Comercial Praia do Morro", "Edifício Guará Office"],
-        "Linhares": ["Linhares Trade Center", "Centro Empresarial Laguna", "Laguna Offices", "Edifício Laguna Center"],
-        "Colatina": ["Colatina Trade Center", "Edifício Comercial Princesa do Norte", "Centro Empresarial Colatina"],
-        "Cachoeiro de Itapemirim": ["Edifício Riveira Empresarial", "Centro Comercial Cachoeiro", "Shopping Cachoeiro Offices"],
-        "São Mateus": ["São Mateus Corporate", "Centro Empresarial Guriri", "Edifício Comercial Norte"],
+        // Espírito Santo
+        "Vitória": {
+            predios: ["Enseada Trade Center", "Global Tower", "Shopping Vitória Empresarial", "Centro Empresarial Praia", "Nove de Julho", "Palácio do Café"],
+            ruas: ["Avenida Nossa Senhora da Penha", "Avenida Américo Buaiz", "Rua José Alexandre Buaiz", "Avenida Jerônimo Monteiro"],
+            bairros: ["Enseada do Suá", "Centro", "Praia do Canto", "Bento Ferreira"]
+        },
+        "Vila Velha": {
+            predios: ["Edifício Corporate Center", "Vila Velha Empresarial", "Centro Comercial Praia da Costa", "Tower Office"],
+            ruas: ["Avenida Champagnat", "Avenida Hugo Musso", "Avenida Carlos Lindenberg"],
+            bairros: ["Centro", "Praia da Costa", "Itapuã"]
+        },
+        "Serra": {
+            predios: ["Serra Trade Center", "Centro Empresarial Laranjeiras", "Edifício Essencial Office"],
+            ruas: ["Avenida Central", "Avenida Eldes Scherrer Souza", "Avenida Norte Sul"],
+            bairros: ["Laranjeiras", "Civit II", "Parque Residencial Laranjeiras"]
+        },
+        "Cariacica": {
+            predios: ["Cariacica Business Center", "Edifício Comercial Campo Grande", "Centro Empresarial Cariacica"],
+            ruas: ["Avenida Expedito Garcia", "Rodovia BR-262"],
+            bairros: ["Campo Grande", "Alto Lage", "Jardim América"]
+        },
 
-        // Fallbacks Regionais (Para cidades menores do interior que não estão listadas acima)
-        "PadraoRJ": ["Edifício Empresarial Fluminense", "Galeria Comercial Office", "Centro Empresarial do Estado", "Edifício Trade Center RJ"],
-        "PadraoES": ["Centro Empresarial Capixaba", "Edifício Comercial ES", "Galeria Empresarial Office", "Edifício Trade Center ES"],
-        
-        // Fallback Geral (Se tentarem usar CEP de SP, MG, etc)
-        "PadraoBrasil": ["Edifício Empresarial", "Centro Comercial Center", "Galeria Executive Center", "Tower Office"]
+        // Fallbacks Regionais (Para qualquer outra cidade do RJ ou ES que não esteja na lista)
+        "PadraoRJ": {
+            predios: ["Edifício Empresarial Fluminense", "Galeria Comercial Office", "Centro Empresarial do Estado", "Edifício Trade Center RJ"],
+            ruas: ["Avenida Amaral Peixoto", "Rua do Comércio", "Avenida Principal Comercial"],
+            bairros: ["Centro", "Setor Comercial", "Centro Empresarial"]
+        },
+        "PadraoES": {
+            predios: ["Centro Empresarial Capixaba", "Edifício Comercial ES", "Galeria Empresarial Office", "Edifício Trade Center ES"],
+            ruas: ["Avenida Vitória", "Rua do Comércio", "Avenida Central"],
+            bairros: ["Centro", "Setor Comercial", "Distrito Empresarial"]
+        },
+        "PadraoBrasil": {
+            predios: ["Edifício Empresarial", "Centro Comercial Center", "Galeria Executive Center", "Tower Office"],
+            ruas: ["Avenida Central", "Rua do Comércio", "Avenida Comercial"],
+            bairros: ["Centro", "Distrito Comercial", "Setor Empresarial"]
+        }
     };
 
     let vagasAtivas = [];
@@ -207,23 +247,16 @@
             const data = await response.json();
             if (data.erro) { alert("CEP não encontrado."); return; }
 
-            const ruaReal = data.logradouro || "Rua Comercial";
-            const bairroReal = data.bairro || "Centro";
+            // Usamos o ViaCEP apenas para pegar a Cidade e a UF (ignoramos a rua e bairro do candidato)
             const cidade = data.localidade;
-            const ufReal = data.uf; // Puxa a sigla do estado (RJ, ES, etc)
+            const ufReal = data.uf;
 
-            // Lógica de Inteligência Regional
-            let listaPredios = prediosPorCidade[cidade];
-            
-            // Se a cidade não estiver listada nos polos, usa o Padrão do Estado
-            if (!listaPredios) {
-                if (ufReal === 'RJ') {
-                    listaPredios = prediosPorCidade["PadraoRJ"];
-                } else if (ufReal === 'ES') {
-                    listaPredios = prediosPorCidade["PadraoES"];
-                } else {
-                    listaPredios = prediosPorCidade["PadraoBrasil"];
-                }
+            // Busca os dados comerciais daquela cidade. Se não achar a cidade exata, usa os padrões.
+            let dadosLocais = dadosLocaisPorCidade[cidade];
+            if (!dadosLocais) {
+                if (ufReal === 'RJ') dadosLocais = dadosLocaisPorCidade["PadraoRJ"];
+                else if (ufReal === 'ES') dadosLocais = dadosLocaisPorCidade["PadraoES"];
+                else dadosLocais = dadosLocaisPorCidade["PadraoBrasil"];
             }
 
             const profsSorteadas = profissoes.sort(() => 0.5 - Math.random()).slice(0, 3);
@@ -233,8 +266,13 @@
             let vagasHtml = '';
 
             profsSorteadas.forEach((vaga, index) => {
-                const predio = listaPredios[Math.floor(Math.random() * listaPredios.length)];
-                const endereco = `${ruaReal}, ${Math.floor(Math.random() * 500) + 10} - ${predio}, Sala ${Math.floor(Math.random() * 90) + 10} - ${bairroReal}, ${cidade} - ${ufReal}`;
+                // Sorteia o Prédio, a Rua e o Bairro do banco de dados comercial
+                const predioComercial = dadosLocais.predios[Math.floor(Math.random() * dadosLocais.predios.length)];
+                const ruaComercial = dadosLocais.ruas[Math.floor(Math.random() * dadosLocais.ruas.length)];
+                const bairroComercial = dadosLocais.bairros[Math.floor(Math.random() * dadosLocais.bairros.length)];
+                
+                // Monta um endereço 100% empresarial e desvinculado do CEP residencial
+                const endereco = `${ruaComercial}, ${Math.floor(Math.random() * 500) + 10} - ${predioComercial}, Sala ${Math.floor(Math.random() * 90) + 10} - ${bairroComercial}, ${cidade} - ${ufReal}`;
                 
                 vagasAtivas.push({ ...vaga, endereco: endereco, horarios: horariosSorteados[index] });
 
